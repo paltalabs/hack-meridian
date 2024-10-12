@@ -8,9 +8,10 @@ import {
     selectTotalLiabilities
 } from '@/store/features/employerStore';
 import { usePayrollVault, PaymentPeriod, PayrollVaultMethod } from "@/hooks/usePayroll";
-import { Address, nativeToScVal } from "@stellar/stellar-sdk";
+import { Address, nativeToScVal, scValToNative, xdr } from "@stellar/stellar-sdk";
 import { useEffect, useState } from "react";
 import { fetchPayrollAddress } from "@/utils/payrollVault";
+import { scvalToString } from "@soroban-react/utils";
 
 export const Example = () => {
 
@@ -27,12 +28,13 @@ export const Example = () => {
     const [payrollAddress, setPayrollAddress] = useState("")
 
     useEffect(() => {
-        if (!activeChain?.name) return;
-        fetchPayrollAddress(activeChain?.name.toLocaleLowerCase()).then((temp) => {
-            if (!temp) return;
-            setPayrollAddress(temp)
-        })
-    }, [])
+        console.log('🚀 ~ useEffect ~ activeChain:', activeChain);
+        if (!activeChain?.id) return;
+        const temp = fetchPayrollAddress(activeChain?.id)
+        if (!temp) return
+        setPayrollAddress(temp)
+
+    }, [activeChain])
 
     const hire = async () => {
         // We will execute EMPLOY
@@ -70,8 +72,22 @@ export const Example = () => {
         }
 
     }
-    const deposit = async () => {
+    const deposit = () => {
 
+    }
+    const getAsset = () => {
+        invokePayrollVault(
+            payrollAddress,
+            PayrollVaultMethod.ASSET,
+            [],
+            false
+        ).then((result) => {
+            // @ts-ignore
+            setShowResult(` Asset:${scValToNative(result)}`)
+
+        }).catch((e) => {
+            setShowResult(`error: ${e}`)
+        })
     }
 
     return (
@@ -86,7 +102,12 @@ export const Example = () => {
             </p>
             <p>
                 <button onClick={() => deposit()}>
-                    deposit
+                    deposit!
+                </button>
+            </p>
+            <p>
+                <button onClick={() => getAsset()}>
+                    getAsset
                 </button>
             </p>
             <p>

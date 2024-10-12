@@ -1,21 +1,9 @@
-import fs from 'fs';
-import path from 'path';
+// Import the JSON file from src/constants/testnet.contracts.json
+import contracts from '@/constants/testnet.contracts.json';
 
-export async function fetchPayrollAddress(network: string): Promise<string | undefined> {
-    console.log('🚀 ~ fetchPayrollAddress ~ network:', network);
-    if (network !== "testnet" && network !== "mainnet") {
-        throw new Error(`Invalid network: ${network}. It should be testnet or mainnet`);
-    }
+// Function to fetch the payroll vault ID
+export const fetchPayrollAddress = (network: string): string => {
+    if (network !== "testnet") console.log("fetchPayrollAddress: not supported network,", network)
+    return contracts?.ids?.payroll_vault;
+};
 
-    const filePath = path.resolve(__dirname, `../../public/${network}.contracts.json`);
-
-    try {
-        const fileData = fs.readFileSync(filePath, 'utf-8');
-        console.log('🚀 ~ fetchPayrollAddress ~ fileData:', fileData);
-        const data = JSON.parse(fileData);
-        const factoryAddress = data.ids.payroll_vault;
-        return factoryAddress;
-    } catch (error) {
-        console.log("error fetching payroll address:", error);
-    }
-}
