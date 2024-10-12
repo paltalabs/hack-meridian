@@ -15,7 +15,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export async function installContract(wasmKey: string, addressBook: AddressBook, source: Keypair) {
-  const contract_wasm_path = path.join(__dirname,`../../${wasmKey}/target/wasm32-unknown-unknown/release/${wasmKey}.wasm`);
+  const contract_wasm_path = path.join(__dirname, `../../target/wasm32-unknown-unknown/release/${dashToSnakeCase(wasmKey)}.optimized.wasm`);
   if (!existsSync(contract_wasm_path)) {
     const error = `The wasm file for contract ${wasmKey} cannot be found at ${contract_wasm_path}`
     throw new Error(error);
@@ -96,7 +96,7 @@ export async function invokeContract(
     contractOperation,
     source,
     false,
-  );  
+  );
 }
 
 export async function invokeCustomContract(
@@ -113,7 +113,7 @@ export async function invokeCustomContract(
     contractOperation,
     source,
     false,
-  );  
+  );
 }
 
 export async function deployStellarAsset(asset: Asset, source: Keypair) {
@@ -273,16 +273,20 @@ export async function getTokenBalance(contractId: string, from: string, source: 
 
   const tokenContract = new Contract(contractId);
   const op = tokenContract.call("balance", new Address(from).toScVal());
-  
+
   const result = await invoke(op, source, true);
   const parsedResult = scValToNative(result.result.retval).toString();
-  
-  if(!parsedResult) {
-      throw new Error("The operation has no result.");
+
+  if (!parsedResult) {
+    throw new Error("The operation has no result.");
   }
-  if(parsedResult == 0) {
-      return parsedResult
+  if (parsedResult == 0) {
+    return parsedResult
   }
   const resultNumber = parseInt(parsedResult.slice(0, -1));
   return resultNumber;
+}
+
+function dashToSnakeCase(str: string): string {
+  return str.replace(/-/g, '_');
 }
