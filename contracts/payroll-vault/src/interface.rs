@@ -1,8 +1,5 @@
 use soroban_sdk::{
-    Address,
-    Env,
-    // Map, 
-    Vec};
+    Address, Env, String};
 
 use crate::{
     // models::{Asset, Strategy},
@@ -49,6 +46,7 @@ pub trait VaultTrait {
         e: Env,
         employer: Address,
         employee: Address,
+        name: String,
         payment_period: PaymentPeriod, // enum weekly monthly or anually
         salary: i128,
         notice_period: i128, // how many payment periods before the employee can be fired
@@ -74,9 +72,6 @@ pub trait VaultTrait {
 
     // get employee available balanbce to withdraw now
     fn employee_available_balance(e: Env, employee: Address) -> i128;
-
-    // get employer employee information
-    fn employer_employee_info(e: Env, employer: Address, employee: Address) -> i128;
 
     fn get_employer(e: Env, employer_address: Address) -> Employer;
 
