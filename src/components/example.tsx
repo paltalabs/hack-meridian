@@ -9,7 +9,8 @@ import {
 } from '@/store/features/employerStore';
 import { usePayrollVault, PaymentPeriod, PayrollVaultMethod } from "@/hooks/usePayroll";
 import { Address, nativeToScVal } from "@stellar/stellar-sdk";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { fetchPayrollAddress } from "@/utils/payrollVault";
 
 export const Example = () => {
 
@@ -23,7 +24,17 @@ export const Example = () => {
     const { invokePayrollVault } = usePayrollVault(activeChain?.name || 'testnet')
 
     const [showResult, setShowResult] = useState("")
-    const handleClick = async () => {
+    const [payrollAddress, setPayrollAddress] = useState("")
+
+    useEffect(() => {
+        if (!activeChain?.name) return;
+        fetchPayrollAddress(activeChain?.name.toLocaleLowerCase()).then((temp) => {
+            if (!temp) return;
+            setPayrollAddress(temp)
+        })
+    }, [])
+
+    const hire = async () => {
         // We will execute EMPLOY
         if (!address) return;
         const employer = new Address(address);
@@ -47,7 +58,7 @@ export const Example = () => {
         let result: any;
         try {
             result = await invokePayrollVault(
-                "CCGYQC6F54HD56XGJQ5JJSD23JCAFSP4KVM7FPVDFEWHLWH67ESX4I7M",
+                payrollAddress,
                 PayrollVaultMethod.EMPLOY,
                 employParams,
                 true
@@ -59,12 +70,25 @@ export const Example = () => {
         }
 
     }
+    const deposit = async () => {
+
+    }
 
     return (
         <div>
-            <button onClick={() => handleClick()}>
-                Hire!
-            </button>
+            <p>
+                Payroll address: {payrollAddress}
+            </p>
+            <p>
+                <button onClick={() => hire()}>
+                    Hire!
+                </button>
+            </p>
+            <p>
+                <button onClick={() => deposit()}>
+                    deposit
+                </button>
+            </p>
             <p>
                 <button onClick={() => setShowResult("")}>
                     Clean
