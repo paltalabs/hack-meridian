@@ -1,7 +1,7 @@
 #![no_std]
 use models::{Employer, PaymentPeriod, WorkContract};
 use soroban_sdk::{
-    contract, contractimpl, Address, Env, Vec // Map, String,
+    contract, contractimpl, token::TokenClient, Address, Env, Vec // Map, String,
 };
 
 mod error;
@@ -89,9 +89,28 @@ impl VaultTrait for PayrollVault {
     }
 
     fn pay_employees(
-        _e: Env,
-        _employer: Address,
+        e: Env,
+        employer: Address,
     ) -> Result<(), ContractError> {
+        let mut employer_struct = get_employer(&e, &employer);
+
+        let asset = get_asset(&e);
+
+        for (employee, work_contract) in employer_struct.employees.iter() {
+            let salary = work_contract.salary;
+
+            let employer_balance = employer_struct.balance;
+
+            if employer_balance < salary {
+                return Err(ContractError::InsufficientFunds);
+            }
+
+            TokenClient::new(&e, &asset).transfer(&e.current_contract_address(), &employee, &salary);
+
+            employer_struct.balance -= salary;
+        }
+
+        set_employer(&e, employer, employer_struct);
         Ok(())
     }
 

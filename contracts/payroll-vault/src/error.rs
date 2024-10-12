@@ -8,4 +8,5 @@ pub enum ContractError {
     NotInitialized = 100,
     AlreadyInitialized = 101,
     AlreadyEmployed = 102,
+    InsufficientFunds = 103,
 }
