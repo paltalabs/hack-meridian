@@ -1,1 +1,12 @@
-[]
+[
+  {
+    "contractId": "greeting",
+    "networkPassphrase": "Test SDF Network ; September 2015",
+    "contractAddress": "CAF7HUJXVXQMIQKPAQNZZXX6OIOD6EOD5NVZNYAOAWGRZAOD445IQU2I"
+  },
+  {
+    "contractId": "payroll-vault",
+    "networkPassphrase": "Test SDF Network ; September 2015",
+    "contractAddress": "CCUWKBOGIYZK7HVIMYJAA65WILSV6GEFFQHJJFACHIKOANR2556IXXDV"
+  }
+]

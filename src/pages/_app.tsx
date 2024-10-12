@@ -8,6 +8,7 @@ import { DefaultSeo } from 'next-seo'
 import type { AppProps } from 'next/app'
 import { Inconsolata } from 'next/font/google'
 import Head from 'next/head'
+import { StoreProvider } from '../store-provider'
 
 import MySorobanReactProvider from "../components/web3/MySorobanReactProvider"
 
@@ -40,20 +41,22 @@ function MyApp({ Component, pageProps }: AppProps) {
           }
         `}</style>
       </Head>
+      <StoreProvider>
 
-      <MySorobanReactProvider>
-        <CacheProvider value={cache}>
-          <ChakraProvider>
+        <MySorobanReactProvider>
+          <CacheProvider value={cache}>
+            <ChakraProvider>
               <GlobalStyles />
 
               <BaseLayout>
                 <Component {...pageProps} />
               </BaseLayout>
 
-            <HotToastConfig />
-          </ChakraProvider>
-        </CacheProvider>
-      </MySorobanReactProvider>
+              <HotToastConfig />
+            </ChakraProvider>
+          </CacheProvider>
+        </MySorobanReactProvider>
+      </StoreProvider>
     </>
   )
 }
