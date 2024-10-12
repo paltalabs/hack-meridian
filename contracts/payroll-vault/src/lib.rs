@@ -93,11 +93,32 @@ impl VaultTrait for PayrollVault {
     // withdraw: employer can withdraw funds
     // can onmly withdraw amount of fundsw so there is enought funds to pay employees
     fn withdraw(
-        _e: Env,
-        _employer: Address,
-        _amount: i128,
+        e: Env,
+        employer: Address,
+        amount: i128,
     ) -> Result<i128, ContractError> {
-        Ok(0i128)
+        check_nonnegative_amount(amount.clone());
+        let employer_struct = get_employer(&e, &employer);
+        employer_struct.address.require_auth();
+
+        let employer_balance = read_balance(&e, employer.clone());
+
+        let available_balance = employer_balance.checked_sub(employer_struct.total_liabilities)
+            .ok_or(ContractError::InsufficientFunds)?;
+
+        if available_balance < amount {
+            return Err(ContractError::InsufficientFunds);
+        }
+
+        TokenClient::new(&e, &get_asset(&e)).transfer(
+            &e.current_contract_address(),
+            &employer,
+            &amount,
+        );
+
+        spend_balance(&e, employer, amount);
+
+        Ok(amount)
     }
         
     fn employ(
@@ -267,13 +288,6 @@ impl VaultTrait for PayrollVault {
             .instance()
             .extend_ttl(INSTANCE_LIFETIME_THRESHOLD, INSTANCE_BUMP_AMOUNT);
         read_balance(&e, employer)
-    }
-
-    // get employee available balanbce to withdraw now
-    fn employee_available_balance(
-        _e: Env, 
-        _employee: Address) -> i128 {
-        0i128
     }
 
     fn get_employer(e: Env, employer_address: Address) -> Employer {

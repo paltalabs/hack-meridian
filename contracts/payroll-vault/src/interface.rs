@@ -70,9 +70,6 @@ pub trait VaultTrait {
     // get employer balance
     fn employer_balance(e: Env, employer: Address) -> i128;
 
-    // get employee available balanbce to withdraw now
-    fn employee_available_balance(e: Env, employee: Address) -> i128;
-
     fn get_employer(e: Env, employer_address: Address) -> Employer;
 
     fn asset(e: Env) -> Address;
