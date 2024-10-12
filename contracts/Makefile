@@ -1,4 +1,4 @@
-SUBDIRS = factory
+SUBDIRS = payroll-vault
 
 default: build
 

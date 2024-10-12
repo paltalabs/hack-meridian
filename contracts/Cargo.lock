@@ -409,13 +409,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b90ca2580b73ab6a1f724b76ca11ab632df820fd6040c336200d2c1df7b3c82c"
 
 [[package]]
-name = "factory"
-version = "1.0.0"
-dependencies = [
- "soroban-sdk",
-]
-
-[[package]]
 name = "ff"
 version = "0.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -726,6 +719,13 @@ name = "paste"
 version = "1.0.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "57c0d7b74b563b49d38dae00a0c37d4d6de9b432382b2892f0574ddcae73fd0a"
+
+[[package]]
+name = "payroll-vault"
+version = "1.0.0"
+dependencies = [
+ "soroban-sdk",
+]
 
 [[package]]
 name = "pkcs8"

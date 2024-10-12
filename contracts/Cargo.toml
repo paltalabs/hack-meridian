@@ -1,5 +1,5 @@
 [workspace]
-members = ["factory"]
+members = ["payroll-vault"]
 exclude = []
 resolver = "2"
 

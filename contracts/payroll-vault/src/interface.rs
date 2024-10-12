@@ -20,13 +20,13 @@ pub trait VaultTrait {
 
     // deposit. employer can deposit funds
     // caller deemployer
-employerposits amount into employers balance
+    // employerposits amount into employers balance
         // this can be called from a POS terminal
     fn deposit(
         e: Env,
         employer: Address,
         amount: Vec<i128>,
-    ) -> Result<(Vec<i128>, i128), ContractError>;
+    ) -> Result<(), ContractError>;
 
     // withdraw: employer can withdraw funds
     // can onmly withdraw amount of fundsw so there is enought funds to pay employees
@@ -48,7 +48,7 @@ employerposits amount into employers balance
         payment_period: i128,
         salary: i128,
         notice_period: i128, // how many payment periods before the employee can be fired
-    )
+    ) -> Result<(), ContractError>;
 
     fn claim_salary(
         e: Env,
@@ -72,7 +72,7 @@ employerposits amount into employers balance
     fn employee_available_balance(e: Env, employee: Address) -> i128;
 
     // get employer employee information
-    fn employer_employee_info(e: Env, employer: Address, employee: Address) -> (i128, i128, i128);
+    fn employer_employee_info(e: Env, employer: Address, employee: Address) -> i128;
 
     // /// get employer health 
 
