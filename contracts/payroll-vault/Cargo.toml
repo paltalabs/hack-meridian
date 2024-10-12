@@ -1,5 +1,5 @@
 [package]
-name = "factory"
+name = "payroll-vault"
 version = { workspace = true }
 authors = ["coderipper <joaquin@paltalabs.io>", "esteblock <esteban@paltalabs.io>"]
 license = { workspace = true }
