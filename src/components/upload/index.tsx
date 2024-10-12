@@ -42,17 +42,48 @@ type FormValues = {
 
 const UploadComponent = () => {
   const { register, handleSubmit, formState: { errors } } = useForm<FormValues>()
-  const onSubmit = handleSubmit((data) => console.log('On Submit: ', data))
+
+  // Function to calculate SHA-256 hash (you can replace this with MD5)
+  const calculateHash = async (file: File) => {
+    return new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsArrayBuffer(file);
+
+      reader.onload = async (event) => {
+        if (event.target?.result) {
+          const buffer = event.target.result as ArrayBuffer;
+
+          // Calculate SHA-256 hash using SubtleCrypto
+          const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+          const hashArray = Array.from(new Uint8Array(hashBuffer));
+          const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+          resolve(hashHex);
+        }
+      };
+
+      reader.onerror = () => reject(new Error('File reading failed'));
+    });
+  }
+
+  const onSubmit = handleSubmit(async (data) => {
+    const file = data.file_[0]; // Get the first file from the FileList
+    if (file) {
+      const hash = await calculateHash(file);
+      console.log('File:', file.name);
+      console.log('SHA-256 Hash:', hash); // Log the hash to the console
+      // this is the hash that needs to be included in the transaction
+    }
+  })
 
   const validateFiles = (value: FileList) => {
     if (value.length < 1) {
-      return 'Files is required'
+      return 'File is required'
     }
     for (const file of Array.from(value)) {
       const fsMb = file.size / (1024 * 1024)
       const MAX_FILE_SIZE = 10
       if (fsMb > MAX_FILE_SIZE) {
-        return 'Max file size 10mb'
+        return 'Max file size 10MB'
       }
     }
     return true
@@ -78,7 +109,7 @@ const UploadComponent = () => {
           </FormErrorMessage>
         </FormControl>
 
-        <button>Submit</button>
+        <button type="submit">Submit</button>
       </form>
     </>
   )
