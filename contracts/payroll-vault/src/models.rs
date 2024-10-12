@@ -1,5 +1,5 @@
 use soroban_sdk::{
-    contracttype, Address, String, Vec,
+    contracttype, Address, Vec,
 };
 
 #[contracttype]
@@ -23,7 +23,6 @@ pub struct WorkContract {
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Employee {
     pub address: Address,
-    pub name: String,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq)]

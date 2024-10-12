@@ -6,7 +6,7 @@ use soroban_sdk::{
 
 use crate::{
     // models::{Asset, Strategy},
-    ContractError,
+    models::PaymentPeriod, ContractError
 };
 
 pub trait VaultTrait {
@@ -48,8 +48,7 @@ pub trait VaultTrait {
         e: Env,
         employer: Address,
         employee: Address,
-        // payment period should be enum weekly monthly or anually
-        payment_period: i128,
+        payment_period: PaymentPeriod, // enum weekly monthly or anually
         salary: i128,
         notice_period: i128, // how many payment periods before the employee can be fired
     ) -> Result<(), ContractError>;
