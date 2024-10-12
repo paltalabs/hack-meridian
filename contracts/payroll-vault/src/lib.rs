@@ -9,12 +9,14 @@ mod interface;
 mod models;
 mod storage;
 mod test;
+mod utils;
 
 use interface::VaultTrait;
 pub use error::ContractError;
 
 use storage::{
     get_asset, get_employer, has_asset, set_asset, set_employer};
+use utils::calculate_periods_since;
 
 #[contract]
 pub struct PayrollVault;
@@ -82,6 +84,10 @@ impl VaultTrait for PayrollVault {
             payment_period,
             salary,
             notice_period,
+            employed_at: e.ledger().timestamp(),
+            is_active: true,
+            unemployed_at: None,
+            notice_period_payments_made: 0,
         };
 
         employer_struct.employees.set(employee, work_contract.clone());
@@ -96,34 +102,93 @@ impl VaultTrait for PayrollVault {
     ) -> Result<(), ContractError> {
         let mut employer_struct = get_employer(&e, &employer);
         employer_struct.address.require_auth();
-
+    
         let asset = get_asset(&e);
-
-        for (employee, work_contract) in employer_struct.employees.iter() {
+    
+        let current_timestamp = e.ledger().timestamp();
+    
+        for (employee_address, mut work_contract) in employer_struct.employees.iter() {
             let salary = work_contract.salary;
-
             let employer_balance = employer_struct.balance;
-
+    
             if employer_balance < salary {
                 return Err(ContractError::InsufficientFunds);
             }
-
-            TokenClient::new(&e, &asset).transfer(&e.current_contract_address(), &employee, &salary);
-
-            employer_struct.balance -= salary;
+    
+            let should_pay = if work_contract.is_active {
+                true
+            } else {
+                if let Some(unemployed_at) = work_contract.unemployed_at {
+                    let periods_since_fired = calculate_periods_since(
+                        unemployed_at,
+                        current_timestamp,
+                        work_contract.payment_period,
+                    );
+    
+                    if periods_since_fired < work_contract.notice_period {
+                        true
+                    } else {
+                        false
+                    }
+                } else {
+                    false
+                }
+            };
+    
+            if should_pay {
+                TokenClient::new(&e, &asset).transfer(
+                    &e.current_contract_address(),
+                    &employee_address,
+                    &salary,
+                );
+    
+                employer_struct.balance -= salary;
+    
+                if !work_contract.is_active {
+                    work_contract.notice_period_payments_made += 1;
+    
+                    if work_contract.notice_period_payments_made >= work_contract.notice_period {
+                        employer_struct.employees.remove(employee_address.clone());
+                    } else {
+                        employer_struct
+                            .employees
+                            .set(employee_address.clone(), work_contract);
+                    }
+                } else {
+                    employer_struct
+                        .employees
+                        .set(employee_address.clone(), work_contract);
+                }
+            }
         }
-
+    
         set_employer(&e, employer, employer_struct);
         Ok(())
     }
 
     // this can only be done by the employer
-    // 
-    fn fire (
-        _e: Env,
-        _employer: Address,
-        _employee: Address,
+    fn fire(
+        e: Env,
+        employer: Address,
+        employee: Address,
     ) -> Result<(), ContractError> {
+        let mut employer_struct = get_employer(&e, &employer);
+        employer_struct.address.require_auth();
+    
+        let mut work_contract = employer_struct
+            .employees
+            .get(employee.clone())
+            .ok_or(ContractError::EmployeeNotFound)?;
+    
+        work_contract.is_active = false;
+        work_contract.unemployed_at = Some(e.ledger().timestamp());
+        work_contract.notice_period_payments_made = 0;
+    
+        employer_struct
+            .employees
+            .set(employee.clone(), work_contract);
+    
+        set_employer(&e, employer, employer_struct);
         Ok(())
     }
 

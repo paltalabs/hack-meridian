@@ -60,7 +60,7 @@ pub trait VaultTrait {
 
     // this can only be done by the employer
     // 
-    fn fire (
+    fn fire(
         e: Env,
         employer: Address,
         employee: Address,

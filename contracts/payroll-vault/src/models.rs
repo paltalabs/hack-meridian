@@ -17,6 +17,10 @@ pub struct WorkContract {
     pub payment_period: PaymentPeriod,
     pub salary: i128,
     pub notice_period: i128,
+    pub employed_at: u64,
+    pub is_active: bool,
+    pub unemployed_at: Option<u64>,
+    pub notice_period_payments_made: i128,
 }
 
 #[contracttype]
@@ -25,7 +29,7 @@ pub struct Employee {
     pub address: Address,
 }
 
-#[derive(Clone, Debug, Eq, PartialEq)]
+#[derive(Clone, Debug, Eq, PartialEq, Copy)]
 #[contracttype]
 pub enum PaymentPeriod {
     Weekly,
