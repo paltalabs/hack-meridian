@@ -43,5 +43,5 @@ sed -i.bak "s/container_name: soroban-preview/container_name: soroban-preview-${
 sed -i.bak "s/container_name: stellar/container_name: stellar-${PROJECT_ID}/" docker-compose.yml
 
 # Start Docker Compose using the correct command
-docker-compose up -d
+docker-compose up -d soroban-preview
 docker exec -it soroban-preview-${PROJECT_ID} bash

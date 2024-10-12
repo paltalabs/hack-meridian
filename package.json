@@ -24,6 +24,7 @@
     "@emotion/react": "^11.11.1",
     "@emotion/server": "^11.11.0",
     "@emotion/styled": "^11.11.0",
+    "@reduxjs/toolkit": "^2.2.8",
     "@soroban-react/chains": "9.1.13",
     "@soroban-react/connect-button": "9.1.13",
     "@soroban-react/contracts": "9.2.2",
@@ -45,6 +46,7 @@
     "react-hook-form": "^7.47.0",
     "react-hot-toast": "^2.4.1",
     "react-icons": "^4.11.0",
+    "react-redux": "^9.1.2",
     "sharp": "^0.32.6",
     "spinners-react": "^1.0.7",
     "use-async-effect": "^2.2.7"
