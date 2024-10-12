@@ -49,7 +49,7 @@ pub trait VaultTrait {
         name: String,
         payment_period: PaymentPeriod, // enum weekly monthly or anually
         salary: i128,
-        notice_period: i128, // how many payment periods before the employee can be fired
+        notice_period: u64, // how many payment periods before the employee can be fired
     ) -> Result<(), ContractError>;
 
     fn pay_employees(
@@ -69,9 +69,6 @@ pub trait VaultTrait {
 
     // get employer balance
     fn employer_balance(e: Env, employer: Address) -> i128;
-
-    // get employee available balanbce to withdraw now
-    fn employee_available_balance(e: Env, employee: Address) -> i128;
 
     fn get_employer(e: Env, employer_address: Address) -> Employer;
 

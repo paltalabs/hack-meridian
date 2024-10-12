@@ -93,11 +93,32 @@ impl VaultTrait for PayrollVault {
     // withdraw: employer can withdraw funds
     // can onmly withdraw amount of fundsw so there is enought funds to pay employees
     fn withdraw(
-        _e: Env,
-        _employer: Address,
-        _amount: i128,
+        e: Env,
+        employer: Address,
+        amount: i128,
     ) -> Result<i128, ContractError> {
-        Ok(0i128)
+        check_nonnegative_amount(amount.clone());
+        let employer_struct = get_employer(&e, &employer);
+        employer_struct.address.require_auth();
+
+        let employer_balance = read_balance(&e, employer.clone());
+
+        let available_balance = employer_balance.checked_sub(employer_struct.total_liabilities)
+            .ok_or(ContractError::InsufficientFunds)?;
+
+        if available_balance < amount {
+            return Err(ContractError::InsufficientFunds);
+        }
+
+        TokenClient::new(&e, &get_asset(&e)).transfer(
+            &e.current_contract_address(),
+            &employer,
+            &amount,
+        );
+
+        spend_balance(&e, employer, amount);
+
+        Ok(amount)
     }
         
     fn employ(
@@ -107,7 +128,7 @@ impl VaultTrait for PayrollVault {
         name: String,
         payment_period: PaymentPeriod,
         salary: i128,
-        notice_period: i128, // Number of payment periods before the employee can be fired
+        notice_periods_required: u64, // Number of payment periods before the employee can be fired
     ) -> Result<(), ContractError> {
         let mut employer_struct = get_employer(&e, &employer);
     
@@ -119,7 +140,7 @@ impl VaultTrait for PayrollVault {
     
         let employer_balance = read_balance(&e, employer.clone());
     
-        let new_employee_liability = salary.checked_mul(notice_period)
+        let new_employee_liability = salary.checked_mul(notice_periods_required as i128)
             .ok_or(ContractError::IntegerOverflow)?;
     
         let available_balance = employer_balance.checked_sub(employer_struct.total_liabilities)
@@ -132,6 +153,7 @@ impl VaultTrait for PayrollVault {
         employer_struct.total_liabilities = employer_struct.total_liabilities.checked_add(new_employee_liability)
             .ok_or(ContractError::IntegerOverflow)?;
     
+        let now = e.ledger().timestamp();
         // Create the new work contract
         let work_contract = WorkContract {
             employee: models::Employee {
@@ -139,11 +161,14 @@ impl VaultTrait for PayrollVault {
                 name,
             },
             payment_period,
+            notice_periods_required,
             salary,
-            notice_period,
-            employed_at: e.ledger().timestamp(),
+
+            employment_start_date: now,
+            employment_end_date: None,
+            last_payment_date: now,
+
             is_active: true,
-            unemployed_at: None,
             notice_period_payments_made: 0,
         };
     
@@ -155,76 +180,68 @@ impl VaultTrait for PayrollVault {
         Ok(())
     }
 
+    // 
     fn pay_employees(
         e: Env,
         employer: Address,
     ) -> Result<(), ContractError> {
+        
         let mut employer_struct = get_employer(&e, &employer);
-        employer_struct.address.require_auth();
-    
         let asset = get_asset(&e);
-    
         let current_timestamp = e.ledger().timestamp();
     
-        let employee_keys: Vec<Address> = employer_struct.employees.keys();
-    
-        for employee_address in employee_keys {
+        for employee_address in employer_struct.employees.keys() {
             let mut work_contract = employer_struct.employees.get(employee_address.clone()).unwrap();
-    
-            let salary = work_contract.salary;
+
+             // I should pay if the periods since fired is less than the notice periods required
+
+             match work_contract.employment_end_date {
+                Some(employment_end_date) if calculate_periods_since(
+                    employment_end_date, 
+                    current_timestamp, 
+                    work_contract.payment_period,
+                ) > work_contract.notice_periods_required as i128 => {
+                    continue; // this person has been fired
+                    employer_struct.employees.remove(employee_address.clone());
+                }
+                _ => {}
+            };
+            
+            let periods_since_last_payment = calculate_periods_since(
+                work_contract.last_payment_date,
+                current_timestamp,
+                work_contract.payment_period,
+            );
+
+            if periods_since_last_payment == 0 { //we skip if the employer does not have to pay the employee
+                continue;
+            }
+
+            let salary_to_pay = work_contract.salary * periods_since_last_payment;
             let employer_balance = read_balance(&e, employer.clone());
     
-            if employer_balance < salary {
+            if employer_balance < salary_to_pay {
+                // TODO: this will fail and we cannot payu at least some employees
+                // TODO make sure we can pay some employees
                 return Err(ContractError::InsufficientFunds);
+                // we should break and emit an event
+                // we can pay something
             }
-    
-            let should_pay = if work_contract.is_active {
-                true
-            } else {
-                if let Some(unemployed_at) = work_contract.unemployed_at {
-                    let periods_since_fired = calculate_periods_since(
-                        unemployed_at,
-                        current_timestamp,
-                        work_contract.payment_period,
-                    );
-    
-                    periods_since_fired < work_contract.notice_period
-                } else {
-                    false
-                }
-            };
-    
-            if should_pay {
-                // Transfer salary to employee
-                TokenClient::new(&e, &asset).transfer(
-                    &e.current_contract_address(),
-                    &employee_address,
-                    &salary,
-                );
-    
-                // Deduct salary from employer's balance
-                spend_balance(&e, employer.clone(), salary);
-    
-                if !work_contract.is_active {
-                    // Reduce total liabilities by the salary amount
-                    employer_struct.total_liabilities = employer_struct.total_liabilities.checked_sub(salary)
-                        .ok_or(ContractError::IntegerOverflow)?;
-    
-                    // Increase notice period payments made
-                    work_contract.notice_period_payments_made += 1;
-    
-                    if work_contract.notice_period_payments_made >= work_contract.notice_period {
-                        // Remove employee from the map
-                        employer_struct.employees.remove(employee_address.clone());
-                    } else {
-                        // Update the work contract in the map
-                        employer_struct.employees.set(employee_address.clone(), work_contract);
-                    }
-                } else {
-                    // Active employee, total liabilities remain unchanged
-                    employer_struct.employees.set(employee_address.clone(), work_contract);
-                }
-            }
+
+            // Deduct salary from employer's LOCAL balance
+            spend_balance(&e, employer.clone(), salary_to_pay);
+            
+            // Transfer salary to employee
+            TokenClient::new(&e, &asset).transfer(
+                &e.current_contract_address(),
+                &employee_address,
+                &salary_to_pay,
+            );
+
+            // TODO This is bad if the payment is made days after the end of a period
+            // TODO FIX THIS
+            work_contract.last_payment_date = current_timestamp;
+            employer_struct.employees.set(employee_address.clone(), work_contract);
         }
     
         set_employer(&e, employer, employer_struct);
@@ -249,7 +266,7 @@ impl VaultTrait for PayrollVault {
         }
     
         work_contract.is_active = false;
-        work_contract.unemployed_at = Some(e.ledger().timestamp());
+        work_contract.employment_end_date = Some(e.ledger().timestamp());
         work_contract.notice_period_payments_made = 0;
     
         employer_struct
@@ -271,13 +288,6 @@ impl VaultTrait for PayrollVault {
             .instance()
             .extend_ttl(INSTANCE_LIFETIME_THRESHOLD, INSTANCE_BUMP_AMOUNT);
         read_balance(&e, employer)
-    }
-
-    // get employee available balanbce to withdraw now
-    fn employee_available_balance(
-        _e: Env, 
-        _employee: Address) -> i128 {
-        0i128
     }
 
     fn get_employer(e: Env, employer_address: Address) -> Employer {

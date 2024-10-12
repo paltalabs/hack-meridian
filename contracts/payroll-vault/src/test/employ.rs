@@ -26,9 +26,9 @@ fn test_employ() {
     // Employ someone
     let employee_0 = Address::generate(&test.env);
     let salary = 1_000_0_000_000;
-    let notice_period = 1;
+    let notice_periods_required = 1;
     let name = String::from_str(&test.env, "Alice");
-    test.contract.employ(&test.employer, &employee_0, &name, &crate::test::payroll_vault::PaymentPeriod::Monthly, &salary, &notice_period);
+    test.contract.employ(&test.employer, &employee_0, &name, &crate::test::payroll_vault::PaymentPeriod::Monthly, &salary, &notice_periods_required);
 }
 
 #[test]
@@ -47,9 +47,9 @@ fn test_employ_without_deposit() {
     // Employ someone
     let employee_0 = Address::generate(&test.env);
     let salary = 1_000_0_000_000;
-    let notice_period = 1;
+    let notice_periods_required = 1;
     let name = String::from_str(&test.env, "Alice");
-    let result = test.contract.try_employ(&test.employer, &employee_0, &name, &crate::test::payroll_vault::PaymentPeriod::Monthly, &salary, &notice_period);
+    let result = test.contract.try_employ(&test.employer, &employee_0, &name, &crate::test::payroll_vault::PaymentPeriod::Monthly, &salary, &notice_periods_required);
 
     assert_eq!(result, Err(Ok(crate::test::payroll_vault::ContractError::InsufficientFunds)));
 }
@@ -78,23 +78,23 @@ fn test_employ_multiple_employees() {
     // Employ someone
     let employee_0 = Address::generate(&test.env);
     let salary = 1_000_0_000_000;
-    let notice_period = 1;
+    let notice_periods_required = 1;
     let name = String::from_str(&test.env, "Alice");
-    test.contract.employ(&test.employer, &employee_0, &name, &crate::test::payroll_vault::PaymentPeriod::Monthly, &salary, &notice_period);
+    test.contract.employ(&test.employer, &employee_0, &name, &crate::test::payroll_vault::PaymentPeriod::Monthly, &salary, &notice_periods_required);
 
     // Employ someone
     let employee_1 = Address::generate(&test.env);
     let salary = 1_000_0_000_000;
-    let notice_period = 2;
+    let notice_periods_required = 2;
     let name = String::from_str(&test.env, "Bob");
-    test.contract.employ(&test.employer, &employee_1, &name, &crate::test::payroll_vault::PaymentPeriod::Weekly, &salary, &notice_period);
+    test.contract.employ(&test.employer, &employee_1, &name, &crate::test::payroll_vault::PaymentPeriod::Weekly, &salary, &notice_periods_required);
 
     // Employ someone
     let employee_2 = Address::generate(&test.env);
     let salary = 1_000_0_000_000;
-    let notice_period = 1;
+    let notice_periods_required = 1;
     let name = String::from_str(&test.env, "John");
-    test.contract.employ(&test.employer, &employee_2, &name, &crate::test::payroll_vault::PaymentPeriod::Monthly, &salary, &notice_period);
+    test.contract.employ(&test.employer, &employee_2, &name, &crate::test::payroll_vault::PaymentPeriod::Monthly, &salary, &notice_periods_required);
 }
 
 #[test]
@@ -121,30 +121,30 @@ fn test_employ_multiple_employees_insufficient_balance() {
     // Employ someone
     let employee_0 = Address::generate(&test.env);
     let salary = 1_000_0_000_000;
-    let notice_period = 1;
+    let notice_periods_required = 1;
     let name = String::from_str(&test.env, "Alice");
-    test.contract.employ(&test.employer, &employee_0, &name, &crate::test::payroll_vault::PaymentPeriod::Monthly, &salary, &notice_period);
+    test.contract.employ(&test.employer, &employee_0, &name, &crate::test::payroll_vault::PaymentPeriod::Monthly, &salary, &notice_periods_required);
 
     // Employ someone
     let employee_1 = Address::generate(&test.env);
     let salary = 1_000_0_000_000;
-    let notice_period = 2;
+    let notice_periods_required = 2;
     let name = String::from_str(&test.env, "Bob");
-    test.contract.employ(&test.employer, &employee_1, &name, &crate::test::payroll_vault::PaymentPeriod::Weekly, &salary, &notice_period);
+    test.contract.employ(&test.employer, &employee_1, &name, &crate::test::payroll_vault::PaymentPeriod::Weekly, &salary, &notice_periods_required);
 
     // Employ someone
     let employee_2 = Address::generate(&test.env);
     let salary = 1_000_0_000_000;
-    let notice_period = 1;
+    let notice_periods_required = 1;
     let name = String::from_str(&test.env, "John");
-    test.contract.employ(&test.employer, &employee_2, &name, &crate::test::payroll_vault::PaymentPeriod::Monthly, &salary, &notice_period);
+    test.contract.employ(&test.employer, &employee_2, &name, &crate::test::payroll_vault::PaymentPeriod::Monthly, &salary, &notice_periods_required);
 
     // Employ someone without enough balance
     let employee_3 = Address::generate(&test.env);
     let salary = 2_000_0_000_000;
-    let notice_period = 2;
+    let notice_periods_required = 2;
     let name = String::from_str(&test.env, "Elba");
-    let result = test.contract.try_employ(&test.employer, &employee_3, &name, &crate::test::payroll_vault::PaymentPeriod::Monthly, &salary, &notice_period);
+    let result = test.contract.try_employ(&test.employer, &employee_3, &name, &crate::test::payroll_vault::PaymentPeriod::Monthly, &salary, &notice_periods_required);
 
     assert_eq!(result, Err(Ok(crate::test::payroll_vault::ContractError::InsufficientFunds)));
 }

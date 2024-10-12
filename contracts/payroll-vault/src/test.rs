@@ -105,7 +105,7 @@ impl<'a> PaymentVaultTest<'a> {
     }
 }
 
-pub mod claim_salary;
+pub mod pay_employees;
 pub mod deposit;
 pub mod employ;
 pub mod fire;
