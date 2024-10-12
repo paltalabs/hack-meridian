@@ -1,7 +1,7 @@
 #![no_std]
 use models::{Employer, PaymentPeriod, WorkContract};
 use soroban_sdk::{
-    contract, contractimpl, token::TokenClient, Address, Env, Vec // Map, String,
+    contract, contractimpl, token::TokenClient, Address, Env, String, Vec // Map, String,
 };
 
 mod error;
@@ -100,31 +100,43 @@ impl VaultTrait for PayrollVault {
         Ok(0i128)
     }
         
-    // employ: employer can employ an employee
-    // This functions produces
-    // <employee, employer> -> <payment_period, salary, notice_period>
-    // this function should take 
     fn employ(
         e: Env,
         employer: Address,
         employee: Address,
+        name: String,
         payment_period: PaymentPeriod,
         salary: i128,
-        notice_period: i128, // how many payment periods before the employee can be fired
+        notice_period: i128, // Number of payment periods before the employee can be fired
     ) -> Result<(), ContractError> {
         let mut employer_struct = get_employer(&e, &employer);
-
-        // TODO: Check if it has enough balance to pay the employee, notice period
-
+    
         employer_struct.address.require_auth();
-
+    
         if employer_struct.employees.contains_key(employee.clone()) {
             return Err(ContractError::AlreadyEmployed);
         }
-
+    
+        let employer_balance = read_balance(&e, employer.clone());
+    
+        let new_employee_liability = salary.checked_mul(notice_period)
+            .ok_or(ContractError::IntegerOverflow)?;
+    
+        let available_balance = employer_balance.checked_sub(employer_struct.total_liabilities)
+            .ok_or(ContractError::InsufficientFunds)?;
+    
+        if available_balance < new_employee_liability {
+            return Err(ContractError::InsufficientFunds);
+        }
+    
+        employer_struct.total_liabilities = employer_struct.total_liabilities.checked_add(new_employee_liability)
+            .ok_or(ContractError::IntegerOverflow)?;
+    
+        // Create the new work contract
         let work_contract = WorkContract {
             employee: models::Employee {
                 address: employee.clone(),
+                name,
             },
             payment_period,
             salary,
@@ -134,9 +146,11 @@ impl VaultTrait for PayrollVault {
             unemployed_at: None,
             notice_period_payments_made: 0,
         };
-
-        employer_struct.employees.set(employee, work_contract.clone());
-
+    
+        // Add the new employee to the employer's employees map
+        employer_struct.employees.set(employee, work_contract);
+    
+        // Save the updated employer struct back to storage
         set_employer(&e, employer, employer_struct);
         Ok(())
     }
@@ -152,7 +166,11 @@ impl VaultTrait for PayrollVault {
     
         let current_timestamp = e.ledger().timestamp();
     
-        for (employee_address, mut work_contract) in employer_struct.employees.iter() {
+        let employee_keys: Vec<Address> = employer_struct.employees.keys();
+    
+        for employee_address in employee_keys {
+            let mut work_contract = employer_struct.employees.get(employee_address.clone()).unwrap();
+    
             let salary = work_contract.salary;
             let employer_balance = read_balance(&e, employer.clone());
     
@@ -170,39 +188,41 @@ impl VaultTrait for PayrollVault {
                         work_contract.payment_period,
                     );
     
-                    if periods_since_fired < work_contract.notice_period {
-                        true
-                    } else {
-                        false
-                    }
+                    periods_since_fired < work_contract.notice_period
                 } else {
                     false
                 }
             };
     
             if should_pay {
+                // Transfer salary to employee
                 TokenClient::new(&e, &asset).transfer(
                     &e.current_contract_address(),
                     &employee_address,
                     &salary,
                 );
     
+                // Deduct salary from employer's balance
                 spend_balance(&e, employer.clone(), salary);
     
                 if !work_contract.is_active {
+                    // Reduce total liabilities by the salary amount
+                    employer_struct.total_liabilities = employer_struct.total_liabilities.checked_sub(salary)
+                        .ok_or(ContractError::IntegerOverflow)?;
+    
+                    // Increase notice period payments made
                     work_contract.notice_period_payments_made += 1;
     
                     if work_contract.notice_period_payments_made >= work_contract.notice_period {
+                        // Remove employee from the map
                         employer_struct.employees.remove(employee_address.clone());
                     } else {
-                        employer_struct
-                            .employees
-                            .set(employee_address.clone(), work_contract);
+                        // Update the work contract in the map
+                        employer_struct.employees.set(employee_address.clone(), work_contract);
                     }
                 } else {
-                    employer_struct
-                        .employees
-                        .set(employee_address.clone(), work_contract);
+                    // Active employee, total liabilities remain unchanged
+                    employer_struct.employees.set(employee_address.clone(), work_contract);
                 }
             }
         }
@@ -211,7 +231,6 @@ impl VaultTrait for PayrollVault {
         Ok(())
     }
 
-    // this can only be done by the employer
     fn fire(
         e: Env,
         employer: Address,
@@ -224,6 +243,10 @@ impl VaultTrait for PayrollVault {
             .employees
             .get(employee.clone())
             .ok_or(ContractError::EmployeeNotFound)?;
+    
+        if !work_contract.is_active {
+            return Err(ContractError::EmployeeAlreadyFired);
+        }
     
         work_contract.is_active = false;
         work_contract.unemployed_at = Some(e.ledger().timestamp());

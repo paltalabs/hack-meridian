@@ -1,5 +1,5 @@
 use soroban_sdk::{
-    contracttype, Address, Map
+    contracttype, Address, Map, String
 };
 
 #[contracttype]
@@ -7,6 +7,8 @@ use soroban_sdk::{
 pub struct Employer {
     pub address: Address,
     pub employees: Map<Address, WorkContract>,
+    pub name: String,
+    pub total_liabilities: i128,
 }
 
 #[contracttype]
@@ -26,6 +28,7 @@ pub struct WorkContract {
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Employee {
     pub address: Address,
+    pub name: String,
 }
 
 #[derive(Clone, Debug, Eq, PartialEq, Copy)]
