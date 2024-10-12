@@ -17,28 +17,16 @@ const inconsolata = Inconsolata({ subsets: ['latin'] })
 function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
-      {/* TODO SEO */}
       <DefaultSeo
-        // dangerouslySetAllPagesToNoFollow={!env.isProduction}
-        // dangerouslySetAllPagesToNoIndex={!env.isProduction}
-        defaultTitle="Soroban React Dapp Boilerplate" // TODO
+        defaultTitle="Payroll" // TODO
         titleTemplate="" // TODO
-        description="Soroaban-based Smart Contract & DApp Development Boilerplate" // TODO
+        description="TBD" // TODO
         openGraph={{
           type: 'website',
           locale: 'en',
           // url: env.url,
           site_name: 'soroban-react-dapp', // TODO
-          images: [
-            // {
-            //   url: `${env.url}/images/cover.jpg`, // TODO
-            //   width: 1200,
-            //   height: 675,
-            // },
-          ],
-        }}
-        twitter={{
-          handle: '', // TODO
+          images: [],
         }}
       />
 
@@ -56,15 +44,13 @@ function MyApp({ Component, pageProps }: AppProps) {
       <MySorobanReactProvider>
         <CacheProvider value={cache}>
           <ChakraProvider>
-            <DarkMode>
               <GlobalStyles />
 
               <BaseLayout>
                 <Component {...pageProps} />
               </BaseLayout>
 
-              <HotToastConfig />
-            </DarkMode>
+            <HotToastConfig />
           </ChakraProvider>
         </CacheProvider>
       </MySorobanReactProvider>

@@ -24,24 +24,13 @@ export const ConnectButton = () => {
     const {activeChain, address, disconnect, setActiveConnectorAndConnect, setActiveChain} = sorobanContext;
     const activeAccount = address;
 
-    const browserWallets = sorobanContext.connectors;
-    const supportedChains = sorobanContext.chains;
-
-  const handleContractInteraction = (chain: WalletChain) => {
-    if (!chain.name || chain.name.toLowerCase() === 'standalone') {
-      toast.error('Please deploy the contract before proceeding when using the standalone chain..');
-    } else {
-      setActiveChain && setActiveChain(chain);
-      toast.success(`Active chain changed to ${chain.name}`);
-    }
-  };
+  const browserWallets = sorobanContext.connectors;
 
     if (!activeAccount)
       return (
         <Menu>
           <MenuButton
             as={Button}
-            // isLoading={isConnecting}
             size="md"
             rightIcon={<FiChevronDown size={22} />}
             py={6}
@@ -101,27 +90,6 @@ export const ConnectButton = () => {
           rounded="2xl"
           maxHeight="40vh"
         >
-          {/* Supported Chains */}
-          {/* Commented this as changing chain with the setActiveChain from soroban-react 
-          is not working well - should change chain in the browser extension */}
-          {/* {supportedChains.map((chain) => (
-            <MenuItem
-              key={chain.name}
-              // isDisabled={chain.network === activeChain?.network}
-              onClick={() => {
-                // toast.error(`Not implemented yet. Please switch chain via the wallet extension.`)
-                handleContractInteraction(chain)
-              }}
-              tw="bg-transparent hocus:bg-gray-800"
-            >
-              <VStack align="start" spacing={0}>
-                <HStack>
-                  <Text>{chain.name}</Text>
-                  {chain.network === activeChain?.network && <AiOutlineCheckCircle size={16} />}
-                </HStack>
-              </VStack>
-            </MenuItem>
-          ))} */}
 
           {/* Disconnect Button */}
           <MenuDivider />
