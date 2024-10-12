@@ -1,40 +1,56 @@
-import { Horizon } from '@stellar/stellar-sdk';
-import { AddressBook } from '../utils/address_book.js';
-import { airdropAccount, deployContract, installContract} from '../utils/contract.js';
-import { config } from '../utils/env_config.js';
+import { Address, nativeToScVal, xdr } from "@stellar/stellar-sdk";
+import {
+  airdropAccount,
+  deployContract,
+  installContract,
+  invokeContract,
+} from "../utils/contract.js";
+import { config } from "../utils/env_config.js";
+import { AddressBook } from "../utils/address_book.js";
 
-export async function deployContracts(addressBook: AddressBook, contracts_to_deploy: Array<string>) {
-
+export async function deployContracts(addressBook: AddressBook) {
   if (network != "mainnet") await airdropAccount(loadedConfig.admin);
-  // if (network === "standalone") await loadedConfig.initializeChildAccounts();
+  let account = await loadedConfig.horizonRpc.loadAccount(
+    loadedConfig.admin.publicKey()
+  );
+  console.log("publicKey", loadedConfig.admin.publicKey());
+  let balance = account.balances.filter((item) => item.asset_type == "native");
+  console.log("Current Admin account balance:", balance[0].balance);
 
-  let account = await loadedConfig.horizonRpc.loadAccount(loadedConfig.admin.publicKey())
-  let balance = account.balances.filter((asset) => asset.asset_type === 'native')[0].balance
-  console.log('Current Admin account balance:', balance);
-  
-  console.log('-------------------------------------------------------');
-  console.log('Deploying Contracts');
-  console.log('-------------------------------------------------------');
-  for (var contract_name of contracts_to_deploy) {
-    console.log(`Deploying ${contract_name}: `)
-    await installContract(contract_name, addressBook, loadedConfig.admin);
-    let contractId = await deployContract(contract_name,contract_name, addressBook, loadedConfig.admin)
-    
-    console.log(`Contract ID of ${contract_name} is ${contractId}\n\n`)
-  }
+  console.log("-------------------------------------------------------");
+  console.log("Deploying Payroll Vault");
+  console.log("-------------------------------------------------------");
+  await installContract("payroll_vault", addressBook, loadedConfig.admin);
+  await deployContract(
+    "payroll_vault",
+    "payroll_vault",
+    addressBook,
+    loadedConfig.admin
+  );
 
-  
+  const asset_address = "CAAFIHB4I7WQMJMKC22CZVQNNX7EONWSOMT6SUXK6I3G3F6J4XFRWNDI";
+
+  const payrollInitParams: xdr.ScVal[] = [
+    new Address(asset_address).toScVal(),
+  ];
+
+  console.log("Initializing DeFindex Factory");
+  await invokeContract(
+    "payroll_vault",
+    addressBook,
+    "initialize",
+    payrollInitParams,
+    loadedConfig.admin
+  );
 }
 
 const network = process.argv[2];
-const contracts_to_deploy = process.argv.slice(3)
 const loadedConfig = config(network);
-const addressBook = AddressBook.loadFromFile(network,loadedConfig);
+const addressBook = AddressBook.loadFromFile(network);
 
 try {
-  await deployContracts(addressBook, contracts_to_deploy);
-}
-catch (e) {
-  console.error(e)
+  await deployContracts(addressBook);
+} catch (e) {
+  console.error(e);
 }
 addressBook.writeToFile();
