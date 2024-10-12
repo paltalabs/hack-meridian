@@ -1,64 +1,42 @@
-// import fs from 'fs';
-// import path from 'path';
-// // import pinataSDK from '@pinata/sdk';
+import pinataSDK from '@pinata/sdk';
 
-// const pinataSDK = require('@pinata/sdk');
+const PINATA_API_KEY = process.env.PINATA_API_KEY;
+const PINATA_API_SECRET = process.env.PINATA_API_SECRET;
 
-// const PINATA_API_KEY: string | undefined = process.env.PINATA_API_KEY;
-// const PINATA_API_SECRET: string | undefined = process.env.PINATA_API_SECRET;
+export async function pinFileToIPFS(fileStream: NodeJS.ReadableStream, fileName: string): Promise<string> {
+  if (!PINATA_API_KEY || !PINATA_API_SECRET) {
+    console.error('Pinata API Key or Secret is undefined.');
+    throw new Error('Pinata API Key or Secret is undefined');
+  }
 
-// console.log("🚀 ~ PINATA_API_SECRET:", PINATA_API_SECRET);
-// console.log("🚀 ~ PINATA_API_KEY:", PINATA_API_KEY);
+  const pinata = new pinataSDK(PINATA_API_KEY, PINATA_API_SECRET);
 
-// export async function pinFileToIPFS(filePath: string, NftName:string ): Promise<string> {
-//   //const filePath: string = '/workspace/img/golden_badge.jpg';
-  
-//   const filename: string = path.basename(filePath);
-//   const baseName: string = path.parse(filename).name;
-//   const fileExt = path.extname(filePath);
-//   console.log(`upload to IPFS ${NftName} from `,  filePath);
+  const options = {
+    pinataMetadata: {
+      name: fileName,
+    },
+  };
 
+  // Pin the file to IPFS
+  const result = await pinata.pinFileToIPFS(fileStream, options);
+  console.log('File pinned:', result);
+  const ipfsHash = result.IpfsHash;
 
-//     if (!PINATA_API_KEY || !PINATA_API_SECRET) {
-//         console.error("Pinata API Key or Secret is undefined.");
-//         return "Pinata API Key or Secret is undefined";
-//     }
-  
-//     const pinata = new pinataSDK(PINATA_API_KEY, PINATA_API_SECRET);
-//     const stream = fs.createReadStream(filePath);
-//     const options = {
-//         pinataMetadata: {
-//             name: `${baseName}${fileExt}`,
-//         },
-//     };
+  const jsonOptions = {
+    pinataMetadata: {
+      name: `${fileName}.json`,
+    },
+  };
 
-//     // Pin the file to IPFS
-//     const result = await pinata.pinFileToIPFS(stream, options);
-//     console.log(result);
-//     const ipfsHash = result.IpfsHash;
+  const jsonContent = {
+    name: fileName,
+    img_url: `https://gateway.pinata.cloud/ipfs/${ipfsHash}`,
+  };
 
-//     const jsonOptions = {
-//       pinataMetadata: {
-//         name: `${baseName}.json`,
-//       },
-//     };
+  // Pin the JSON content to IPFS
+  const jsonResult = await pinata.pinJSONToIPFS(jsonContent, jsonOptions);
+  const fileUri = `https://gateway.pinata.cloud/ipfs/${jsonResult.IpfsHash}`;
+  console.log('FILE URI:', fileUri);
 
-//     const jsonContent = {
-//         name: NftName,
-//         img_url: `https://gateway.pinata.cloud/ipfs/${ipfsHash}`
-//     };
-
-//     // Pin the JSON content to IPFS
-//     const jsonResult = await pinata.pinJSONToIPFS(jsonContent, jsonOptions);
-//     const nft_uri = `https://gateway.pinata.cloud/ipfs/${jsonResult.IpfsHash}`;
-//     console.log("NFT URI:", nft_uri);
-
-//     const nftUriFilePath = '/workspace/.soroban/nft_uri';
-
-//     // Write the NFT URI to a file
-//     //await fs.promises.writeFile(nftUriFilePath, nft_uri);
-//     await fs.promises.appendFile(nftUriFilePath, nft_uri + '\n' + '\n');
-
-//     console.log('NFT URI has been written to the file successfully.');
-//     return nft_uri;
-// }
+  return fileUri;
+}
