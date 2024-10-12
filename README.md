@@ -1,19 +1,31 @@
-# Welcome to your soroban react dapp boilerplate!
-
-This dapp largely inspired by the [ink!athon](https://github.com/scio-labs/inkathon) project will help you kickstart your soroban dapp creator journey.
-
-## Verify installation
-
-To verify that everything is in order you can run
+# Payroll Genius
 
 ```bash
-# If you use yarn
+docker compose up -d
+yarn
 yarn dev
-
-# If you use npm or pnpm
-npm run dev
-pnpm run dev
 ```
+
+## Run Docker Container and Entter to container
+```bash
+docker compose up -d
+bash run.sh
+```
+
+## Compile Contracts
+```bash
+cd contracts
+make build
+```
+
+## Deploy Contracts
+
+```bash
+cd contracts
+yarn
+yarn deploy testnet
+```
+
 
 This will start the development server. The dapp will be available on localhost. 
 
