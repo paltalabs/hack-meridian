@@ -11,10 +11,8 @@ export enum PayrollVaultMethod {
     EMPLOY = "employ",
     PAY_EMPLOYEES = "pay_employees",
     FIRE = "fire",
-    BALANCE = "balance",
     EMPLOYER_BALANCE = "employer_balance",
-    EMPLOYEE_AVAILABLE_BALANCE = "employee_available_balance",
-    EMPLOYER_EMPLOYEE_INFO = "employer_employee_info",
+    GET_EMPLOYER = "get_employer",
     ASSET = "asset"
 }
 
