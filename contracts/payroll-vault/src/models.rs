@@ -15,14 +15,16 @@ pub struct Employer {
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct WorkContract {
     pub employee: Employee,
+
     pub payment_period: PaymentPeriod,
     pub notice_periods_required: u64,            // Reflects the number of payment periods required as notice    pub salary: i128,
+
     pub salary: i128,
+    
     pub employment_start_date: u64,              // Clarified to indicate employment start date
     pub employment_end_date: Option<u64>,        // Renamed for employment end date (if applicable)
     pub last_payment_date: u64,                  // More explicit name for last payment date
     
-    pub is_active: bool,
     pub notice_period_payments_made: i128, //
 }
 
