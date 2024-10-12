@@ -10,8 +10,7 @@ mod models;
 mod storage;
 mod test;
 mod balance;
-
-
+mod utils;
 
 use interface::VaultTrait;
 pub use error::ContractError;
@@ -32,6 +31,8 @@ use balance::{
     read_balance, 
     receive_balance, 
     spend_balance};
+
+use utils::calculate_periods_since;
 
 
 fn check_nonnegative_amount(amount: i128) {
@@ -76,11 +77,16 @@ impl VaultTrait for PayrollVault {
             .extend_ttl(INSTANCE_LIFETIME_THRESHOLD, INSTANCE_BUMP_AMOUNT);
         
         // caller sends amount to this contract
-        TokenClient::new(&e, &get_asset(&e)).transfer(&caller, &e.current_contract_address(), &amount);
+        TokenClient::new(
+            &e, 
+            &get_asset(&e)).transfer(
+                &caller, 
+                &e.current_contract_address(), 
+            &amount);
 
         receive_balance(&e, employer.clone(), amount); // we record the balance of the employer
 
-        // event
+        // TODO: Create an event
         Ok(())
     }
 
@@ -108,6 +114,8 @@ impl VaultTrait for PayrollVault {
     ) -> Result<(), ContractError> {
         let mut employer_struct = get_employer(&e, &employer);
 
+        // TODO: Check if it has enough balance to pay the employee, notice period
+
         employer_struct.address.require_auth();
 
         if employer_struct.employees.contains_key(employee.clone()) {
@@ -121,6 +129,10 @@ impl VaultTrait for PayrollVault {
             payment_period,
             salary,
             notice_period,
+            employed_at: e.ledger().timestamp(),
+            is_active: true,
+            unemployed_at: None,
+            notice_period_payments_made: 0,
         };
 
         employer_struct.employees.set(employee, work_contract.clone());
@@ -135,44 +147,95 @@ impl VaultTrait for PayrollVault {
     ) -> Result<(), ContractError> {
         let mut employer_struct = get_employer(&e, &employer);
         employer_struct.address.require_auth();
-
+    
         let asset = get_asset(&e);
-
-        for (employee, work_contract) in employer_struct.employees.iter() {
+    
+        let current_timestamp = e.ledger().timestamp();
+    
+        for (employee_address, mut work_contract) in employer_struct.employees.iter() {
             let salary = work_contract.salary;
-
-            let employer_balance = employer_struct.balance;
-
+            let employer_balance = read_balance(&e, employer.clone());
+    
             if employer_balance < salary {
                 return Err(ContractError::InsufficientFunds);
             }
-
-            TokenClient::new(&e, &asset).transfer(&e.current_contract_address(), &employee, &salary);
-
-            employer_struct.balance -= salary;
+    
+            let should_pay = if work_contract.is_active {
+                true
+            } else {
+                if let Some(unemployed_at) = work_contract.unemployed_at {
+                    let periods_since_fired = calculate_periods_since(
+                        unemployed_at,
+                        current_timestamp,
+                        work_contract.payment_period,
+                    );
+    
+                    if periods_since_fired < work_contract.notice_period {
+                        true
+                    } else {
+                        false
+                    }
+                } else {
+                    false
+                }
+            };
+    
+            if should_pay {
+                TokenClient::new(&e, &asset).transfer(
+                    &e.current_contract_address(),
+                    &employee_address,
+                    &salary,
+                );
+    
+                spend_balance(&e, employer.clone(), salary);
+    
+                if !work_contract.is_active {
+                    work_contract.notice_period_payments_made += 1;
+    
+                    if work_contract.notice_period_payments_made >= work_contract.notice_period {
+                        employer_struct.employees.remove(employee_address.clone());
+                    } else {
+                        employer_struct
+                            .employees
+                            .set(employee_address.clone(), work_contract);
+                    }
+                } else {
+                    employer_struct
+                        .employees
+                        .set(employee_address.clone(), work_contract);
+                }
+            }
         }
-
+    
         set_employer(&e, employer, employer_struct);
         Ok(())
     }
 
     // this can only be done by the employer
-    // 
-    fn fire (
-        _e: Env,
-        _employer: Address,
-        _employee: Address,
+    fn fire(
+        e: Env,
+        employer: Address,
+        employee: Address,
     ) -> Result<(), ContractError> {
+        let mut employer_struct = get_employer(&e, &employer);
+        employer_struct.address.require_auth();
+    
+        let mut work_contract = employer_struct
+            .employees
+            .get(employee.clone())
+            .ok_or(ContractError::EmployeeNotFound)?;
+    
+        work_contract.is_active = false;
+        work_contract.unemployed_at = Some(e.ledger().timestamp());
+        work_contract.notice_period_payments_made = 0;
+    
+        employer_struct
+            .employees
+            .set(employee.clone(), work_contract);
+    
+        set_employer(&e, employer, employer_struct);
         Ok(())
     }
-
-    fn balance(e: Env, id: Address) -> i128 {
-        e.storage()
-            .instance()
-            .extend_ttl(INSTANCE_LIFETIME_THRESHOLD, INSTANCE_BUMP_AMOUNT);
-        read_balance(&e, id)
-    }
-
 
     // READ FUNCTION
 
@@ -181,8 +244,10 @@ impl VaultTrait for PayrollVault {
         e: Env, 
         employer: Address
     ) -> i128 {
-        let employer_struct = get_employer(&e, &employer);
-        employer_struct.balance
+        e.storage()
+            .instance()
+            .extend_ttl(INSTANCE_LIFETIME_THRESHOLD, INSTANCE_BUMP_AMOUNT);
+        read_balance(&e, employer)
     }
 
     // get employee available balanbce to withdraw now

@@ -41,6 +41,7 @@ fn create_payroll_vault_contract<'a>(
 pub struct PaymentVaultTest<'a> {
     env: Env,
     admin: Address,
+    employer: Address,
     token: TokenClient<'a>,
     contract: PayrollVaultClient<'a>,
 }
@@ -52,8 +53,12 @@ impl<'a> PaymentVaultTest<'a> {
         env.mock_all_auths();
 
         let admin = Address::generate(&env);
+        let employer = Address::generate(&env);
         let token = create_token_contract(&env, &admin);
         let contract = create_payroll_vault_contract(&env);
+
+        // mint to employer
+        token.mint(&employer, &1_000_000_000_000);
 
         // let test = PhoenixTest::phoenix_setup();
         
@@ -85,6 +90,7 @@ impl<'a> PaymentVaultTest<'a> {
         PaymentVaultTest {
             env: env,
             admin: admin,
+            employer: employer,
             token: token,
             contract: contract,
             // adapter_client,

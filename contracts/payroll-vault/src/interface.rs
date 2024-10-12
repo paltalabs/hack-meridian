@@ -61,7 +61,7 @@ pub trait VaultTrait {
 
     // this can only be done by the employer
     // 
-    fn fire (
+    fn fire(
         e: Env,
         employer: Address,
         employee: Address,
@@ -81,8 +81,6 @@ pub trait VaultTrait {
     fn get_employer(e: Env, employer_address: Address) -> Employer;
 
     fn asset(e: Env) -> Address;
-
-    fn balance(e: Env, id: Address) -> i128;
 
     // /// get employer health 
 
