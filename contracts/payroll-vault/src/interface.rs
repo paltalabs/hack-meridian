@@ -77,6 +77,8 @@ pub trait VaultTrait {
     // get employer employee information
     fn employer_employee_info(e: Env, employer: Address, employee: Address) -> i128;
 
+    fn asset(e: Env) -> Address;
+
     // /// get employer health 
 
 
