@@ -76,11 +76,16 @@ impl VaultTrait for PayrollVault {
             .extend_ttl(INSTANCE_LIFETIME_THRESHOLD, INSTANCE_BUMP_AMOUNT);
         
         // caller sends amount to this contract
-        TokenClient::new(&e, &get_asset(&e)).transfer(&caller, &e.current_contract_address(), &amount);
+        TokenClient::new(
+            &e, 
+            &get_asset(&e)).transfer(
+                &caller, 
+                &e.current_contract_address(), 
+            &amount);
 
         receive_balance(&e, employer.clone(), amount); // we record the balance of the employer
 
-        // event
+        // TODO: Create an event
         Ok(())
     }
 
