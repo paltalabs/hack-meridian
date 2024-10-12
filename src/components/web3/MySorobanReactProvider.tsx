@@ -9,7 +9,7 @@ import { lobstr } from '@soroban-react/lobstr';
 import deployments from '../../../contracts/deployments.json';
 
 const chains: ChainMetadata[] = [sandbox, standalone, futurenet,testnet];
-const connectors: Connector[] = [freighter(), hana(), lobstr()];
+export const connectors: Connector[] = [freighter(), hana(), lobstr()];
 
 
 export default function MySorobanReactProvider({children}:{children: React.ReactNode}) {
