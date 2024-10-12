@@ -10,4 +10,6 @@ pub enum ContractError {
     AlreadyEmployed = 102,
     InsufficientFunds = 103,
     EmployeeNotFound = 104,
+    IntegerOverflow = 105,
+    EmployeeAlreadyFired = 106,
 }
