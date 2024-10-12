@@ -386,14 +386,6 @@
     "@types/lodash.mergewith" "4.6.9"
     lodash.mergewith "4.6.2"
 
-"@creit-tech/xbull-wallet-connect@github:Creit-Tech/xBull-Wallet-Connect":
-  version "0.3.0"
-  resolved "https://codeload.github.com/Creit-Tech/xBull-Wallet-Connect/tar.gz/79c0d93d8e11faf246d0dc80dcbac6976d71e244"
-  dependencies:
-    rxjs "^7.5.5"
-    tweetnacl "^1.0.3"
-    tweetnacl-util "^0.15.1"
-
 "@creit.tech/xbull-wallet-connect@0.3.0":
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/@creit.tech/xbull-wallet-connect/-/xbull-wallet-connect-0.3.0.tgz#c0686fcacf6794381ce71396d0ad803e09f742ce"
@@ -861,15 +853,6 @@
   dependencies:
     "@soroban-react/connect-button" "^9.1.13"
     "@soroban-react/core" "^9.1.13"
-    "@soroban-react/types" "^9.1.13"
-    "@stellar/stellar-sdk" "12.2.0"
-
-"@soroban-react/xbull@9.1.13":
-  version "9.1.13"
-  resolved "https://registry.yarnpkg.com/@soroban-react/xbull/-/xbull-9.1.13.tgz#01d64e6fc7b94f07650fc75be6aeb8c3bcf5159b"
-  integrity sha512-tYsVg39LYytVBSXvXKECz+O3GjvZM/NTz3R52SwaohRjT6DAoEuGnbdHw01CyGn6FQIt2UkydGxrI5AQZ+lHwQ==
-  dependencies:
-    "@creit-tech/xbull-wallet-connect" "github:Creit-Tech/xBull-Wallet-Connect"
     "@soroban-react/types" "^9.1.13"
     "@stellar/stellar-sdk" "12.2.0"
 
