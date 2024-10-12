@@ -21,6 +21,15 @@ fn test_deposit_employer_is_caller() {
     assert_eq!(test.contract.employer_balance(&test.employer), deposit_amount);
     assert_eq!(test.token.balance(&test.employer), initial_employer_asset_balance - deposit_amount);
     assert_eq!(test.token.balance(&test.contract.address), deposit_amount);
+
+    // can deposit again with different amount
+    let deposit_amount2 = 987654321;
+    test.contract.deposit(&test.employer, &test.employer, &deposit_amount2);
+    // test new balances
+    assert_eq!(test.contract.employer_balance(&test.employer), deposit_amount + deposit_amount2);
+    assert_eq!(test.token.balance(&test.employer), initial_employer_asset_balance - deposit_amount - deposit_amount2);
+    assert_eq!(test.token.balance(&test.contract.address), deposit_amount + deposit_amount2);
+    
 }
  
 
