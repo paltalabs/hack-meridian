@@ -35,8 +35,6 @@ export default class MyDocument extends Document<NewDocumentInitialProps> {
     return (
       <Html lang="en">
         <Head>
-          {/* TODO Manifest & Favicons */}
-          {/* TIP: Generate it at https://realfavicongenerator.net/ */}
           <link rel="shortcut icon" href="/favicon.ico" />
           <link rel="manifest" href="/site.webmanifest" />
           <meta name="msapplication-config" content="/browserconfig.xml" />
