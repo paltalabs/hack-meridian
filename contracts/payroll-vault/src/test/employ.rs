@@ -28,7 +28,8 @@ fn test_employ() {
     let salary = 1_000_0_000_000;
     let notice_periods_required = 1;
     let name = String::from_str(&test.env, "Alice");
-    test.contract.employ(&test.employer, &employee_0, &name, &crate::test::payroll_vault::PaymentPeriod::Monthly, &salary, &notice_periods_required);
+    let work_contract_document_hash = String::from_str(&test.env, "hash");
+    test.contract.employ(&test.employer, &employee_0, &name, &crate::test::payroll_vault::PaymentPeriod::Monthly, &salary, &notice_periods_required, &work_contract_document_hash);
 
     // check that we get the information of the employee
     let employer_struct = test.contract.get_employer(&test.employer);
@@ -61,7 +62,8 @@ fn test_employ_without_deposit() {
     let salary = 1_000_0_000_000;
     let notice_periods_required = 1;
     let name = String::from_str(&test.env, "Alice");
-    let result = test.contract.try_employ(&test.employer, &employee_0, &name, &crate::test::payroll_vault::PaymentPeriod::Monthly, &salary, &notice_periods_required);
+    let work_contract_document_hash = String::from_str(&test.env, "hash");
+    let result = test.contract.try_employ(&test.employer, &employee_0, &name, &crate::test::payroll_vault::PaymentPeriod::Monthly, &salary, &notice_periods_required, &work_contract_document_hash);
 
     assert_eq!(result, Err(Ok(crate::test::payroll_vault::ContractError::InsufficientFunds)));
 }
@@ -92,21 +94,24 @@ fn test_employ_multiple_employees() {
     let salary = 1_000_0_000_000;
     let notice_periods_required = 1;
     let name = String::from_str(&test.env, "Alice");
-    test.contract.employ(&test.employer, &employee_0, &name, &crate::test::payroll_vault::PaymentPeriod::Monthly, &salary, &notice_periods_required);
+    let work_contract_document_hash = String::from_str(&test.env, "hash");
+    test.contract.employ(&test.employer, &employee_0, &name, &crate::test::payroll_vault::PaymentPeriod::Monthly, &salary, &notice_periods_required, &work_contract_document_hash);
 
     // Employ someone
     let employee_1 = Address::generate(&test.env);
     let salary = 1_000_0_000_000;
     let notice_periods_required = 2;
     let name = String::from_str(&test.env, "Bob");
-    test.contract.employ(&test.employer, &employee_1, &name, &crate::test::payroll_vault::PaymentPeriod::Weekly, &salary, &notice_periods_required);
+    let work_contract_document_hash = String::from_str(&test.env, "hash");
+    test.contract.employ(&test.employer, &employee_1, &name, &crate::test::payroll_vault::PaymentPeriod::Weekly, &salary, &notice_periods_required, &work_contract_document_hash);
 
     // Employ someone
     let employee_2 = Address::generate(&test.env);
     let salary = 1_000_0_000_000;
     let notice_periods_required = 1;
     let name = String::from_str(&test.env, "John");
-    test.contract.employ(&test.employer, &employee_2, &name, &crate::test::payroll_vault::PaymentPeriod::Monthly, &salary, &notice_periods_required);
+    let work_contract_document_hash = String::from_str(&test.env, "hash");
+    test.contract.employ(&test.employer, &employee_2, &name, &crate::test::payroll_vault::PaymentPeriod::Monthly, &salary, &notice_periods_required, &work_contract_document_hash);
 }
 
 #[test]
@@ -135,28 +140,32 @@ fn test_employ_multiple_employees_insufficient_balance() {
     let salary = 1_000_0_000_000;
     let notice_periods_required = 1;
     let name = String::from_str(&test.env, "Alice");
-    test.contract.employ(&test.employer, &employee_0, &name, &crate::test::payroll_vault::PaymentPeriod::Monthly, &salary, &notice_periods_required);
+    let work_contract_document_hash = String::from_str(&test.env, "hash");
+    test.contract.employ(&test.employer, &employee_0, &name, &crate::test::payroll_vault::PaymentPeriod::Monthly, &salary, &notice_periods_required, &work_contract_document_hash);
 
     // Employ someone
     let employee_1 = Address::generate(&test.env);
     let salary = 1_000_0_000_000;
     let notice_periods_required = 2;
     let name = String::from_str(&test.env, "Bob");
-    test.contract.employ(&test.employer, &employee_1, &name, &crate::test::payroll_vault::PaymentPeriod::Weekly, &salary, &notice_periods_required);
+    let work_contract_document_hash = String::from_str(&test.env, "hash");
+    test.contract.employ(&test.employer, &employee_1, &name, &crate::test::payroll_vault::PaymentPeriod::Weekly, &salary, &notice_periods_required, &work_contract_document_hash);
 
     // Employ someone
     let employee_2 = Address::generate(&test.env);
     let salary = 1_000_0_000_000;
     let notice_periods_required = 1;
     let name = String::from_str(&test.env, "John");
-    test.contract.employ(&test.employer, &employee_2, &name, &crate::test::payroll_vault::PaymentPeriod::Monthly, &salary, &notice_periods_required);
+    let work_contract_document_hash = String::from_str(&test.env, "hash");
+    test.contract.employ(&test.employer, &employee_2, &name, &crate::test::payroll_vault::PaymentPeriod::Monthly, &salary, &notice_periods_required, &work_contract_document_hash);
 
     // Employ someone without enough balance
     let employee_3 = Address::generate(&test.env);
     let salary = 2_000_0_000_000;
     let notice_periods_required = 2;
     let name = String::from_str(&test.env, "Elba");
-    let result = test.contract.try_employ(&test.employer, &employee_3, &name, &crate::test::payroll_vault::PaymentPeriod::Monthly, &salary, &notice_periods_required);
+    let work_contract_document_hash = String::from_str(&test.env, "hash");
+    let result = test.contract.try_employ(&test.employer, &employee_3, &name, &crate::test::payroll_vault::PaymentPeriod::Monthly, &salary, &notice_periods_required, &work_contract_document_hash);
 
     assert_eq!(result, Err(Ok(crate::test::payroll_vault::ContractError::InsufficientFunds)));
 }

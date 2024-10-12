@@ -26,6 +26,8 @@ pub struct WorkContract {
     pub last_payment_date: u64,                  // More explicit name for last payment date
     
     pub notice_period_payments_made: i128, //
+
+    pub work_contract_document_hash: String,
 }
 
 #[contracttype]

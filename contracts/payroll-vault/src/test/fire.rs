@@ -28,6 +28,7 @@ fn test_fire_employee_successful() {
     let notice_period = 2u64;
     let payment_period = PaymentPeriod::Monthly;
     let employee_name = String::from_str(&test.env, "Alice");
+    let work_contract_document_hash = String::from_str(&test.env, "hash");
 
     test.contract.employ(
         &test.employer,
@@ -36,6 +37,7 @@ fn test_fire_employee_successful() {
         &payment_period,
         &salary,
         &notice_period,
+        &work_contract_document_hash,
     );
 
     // Verify that the employee is employed
@@ -105,6 +107,8 @@ fn test_fire_employee_already_fired() {
     let notice_period = 2u64;
     let payment_period = PaymentPeriod::Monthly;
     let employee_name = String::from_str(&test.env, "Bob");
+    let work_contract_document_hash = String::from_str(&test.env, "hash");
+
 
     test.contract.employ(
         &test.employer,
@@ -113,6 +117,7 @@ fn test_fire_employee_already_fired() {
         &payment_period,
         &salary,
         &notice_period,
+        &work_contract_document_hash,
     );
 
     // Fire the employee

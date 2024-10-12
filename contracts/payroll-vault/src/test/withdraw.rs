@@ -28,14 +28,16 @@ fn test_withdraw_success() {
     let salary_0 = 1_000_0_000_000;
     let notice_periods_required_0 = 1u64;
     let name = String::from_str(&test.env, "Alice");
-    test.contract.employ(&test.employer, &employee_0, &name, &crate::test::payroll_vault::PaymentPeriod::Monthly, &salary_0, &notice_periods_required_0);
+    let work_contract_document_hash = String::from_str(&test.env, "hash");
+    test.contract.employ(&test.employer, &employee_0, &name, &crate::test::payroll_vault::PaymentPeriod::Monthly, &salary_0, &notice_periods_required_0, &work_contract_document_hash);
 
     // Employ someone
     let employee_1 = Address::generate(&test.env);
     let salary_1 = 1_000_0_000_000;
     let notice_periods_required_1 = 2u64;
     let name = String::from_str(&test.env, "Bob");
-    test.contract.employ(&test.employer, &employee_1, &name, &crate::test::payroll_vault::PaymentPeriod::Weekly, &salary_1, &notice_periods_required_1);
+    let work_contract_document_hash = String::from_str(&test.env, "hash");
+    test.contract.employ(&test.employer, &employee_1, &name, &crate::test::payroll_vault::PaymentPeriod::Weekly, &salary_1, &notice_periods_required_1, &work_contract_document_hash);
 
 
     // Withdraw Available Balance
@@ -71,14 +73,18 @@ fn test_withdraw_more_than_available() {
     let salary_0 = 1_000_0_000_000;
     let notice_periods_required_0 = 1u64;
     let name = String::from_str(&test.env, "Alice");
-    test.contract.employ(&test.employer, &employee_0, &name, &crate::test::payroll_vault::PaymentPeriod::Monthly, &salary_0, &notice_periods_required_0);
+    let work_contract_document_hash = String::from_str(&test.env, "hash");
+
+    test.contract.employ(&test.employer, &employee_0, &name, &crate::test::payroll_vault::PaymentPeriod::Monthly, &salary_0, &notice_periods_required_0, &work_contract_document_hash);
 
     // Employ someone
     let employee_1 = Address::generate(&test.env);
     let salary_1 = 1_000_0_000_000;
     let notice_periods_required_1 = 2u64;
     let name = String::from_str(&test.env, "Bob");
-    test.contract.employ(&test.employer, &employee_1, &name, &crate::test::payroll_vault::PaymentPeriod::Weekly, &salary_1, &notice_periods_required_1);
+    let work_contract_document_hash = String::from_str(&test.env, "hash");
+
+    test.contract.employ(&test.employer, &employee_1, &name, &crate::test::payroll_vault::PaymentPeriod::Weekly, &salary_1, &notice_periods_required_1, &work_contract_document_hash);
 
 
     // Withdraw Available Balance

@@ -1,7 +1,7 @@
 #![no_std]
 use models::{Employer, PaymentPeriod, WorkContract};
 use soroban_sdk::{
-    contract, contractimpl, token::TokenClient, Address, Env, String, Vec // Map, String,
+    contract, contractimpl, token::TokenClient, Address, Env, String, // Vec // Map, String,
 };
 
 mod error;
@@ -129,6 +129,7 @@ impl VaultTrait for PayrollVault {
         payment_period: PaymentPeriod,
         salary: i128,
         notice_periods_required: u64, // Number of payment periods before the employee can be fired
+        work_contract_document_hash: String,
     ) -> Result<(), ContractError> {
         let mut employer_struct = get_employer(&e, &employer);
     
@@ -169,6 +170,7 @@ impl VaultTrait for PayrollVault {
             last_payment_date: now,
 
             notice_period_payments_made: 0,
+            work_contract_document_hash,
         };
     
         // Add the new employee to the employer's employees map
@@ -199,8 +201,8 @@ impl VaultTrait for PayrollVault {
                     current_timestamp, 
                     work_contract.payment_period,
                 ) > work_contract.notice_periods_required => {
-                    continue; // this person has been fired
                     employer_struct.employees.remove(employee_address.clone());
+                    continue; // this person has been fired
                 }
                 _ => {}
             };
