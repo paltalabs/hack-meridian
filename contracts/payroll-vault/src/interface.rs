@@ -55,6 +55,14 @@ employerposits amount into employers balance
         employee: Address,
     ) -> Result<i128, ContractError>;
 
+    // this can only be done by the employer
+    // 
+    fn fire (
+        e: Env,
+        employer: Address,
+        employee: Address,
+    ) -> Result<(), ContractError>;
+
     // READ FUNCTION
 
     // get employer balance
@@ -63,32 +71,37 @@ employerposits amount into employers balance
     // get employee available balanbce to withdraw now
     fn employee_available_balance(e: Env, employee: Address) -> i128;
 
+    // get employer employee information
+    fn employer_employee_info(e: Env, employer: Address, employee: Address) -> (i128, i128, i128);
 
-    fn withdraw(e: Env, df_amount: i128, from: Address) -> Result<(), ContractError>;
+    // /// get employer health 
 
-    fn emergency_withdraw(e: Env, amount: i128, from: Address) -> Result<(), ContractError>;
 
-    fn get_assets(e: Env) -> Vec<Asset>;
+    // fn withdraw(e: Env, df_amount: i128, from: Address) -> Result<(), ContractError>;
 
-    fn fetch_total_managed_funds(e: &Env) -> Map<Address, i128>;
+    // fn emergency_withdraw(e: Env, amount: i128, from: Address) -> Result<(), ContractError>;
 
-    fn fetch_current_invested_funds(e: &Env) -> Map<Address, i128>;
+    // fn get_assets(e: Env) -> Vec<Asset>;
 
-    fn fetch_current_idle_funds(e: &Env) -> Map<Address, i128>;
+    // fn fetch_total_managed_funds(e: &Env) -> Map<Address, i128>;
 
-    fn user_balance(e: Env, from: Address) -> i128;
+    // fn fetch_current_invested_funds(e: &Env) -> Map<Address, i128>;
+
+    // fn fetch_current_idle_funds(e: &Env) -> Map<Address, i128>;
+
+    // fn user_balance(e: Env, from: Address) -> i128;
 }
 
-pub trait AdminInterfaceTrait {
-    fn set_fee_receiver(e: Env, caller: Address, fee_receiver: Address);
+// pub trait AdminInterfaceTrait {
+//     fn set_fee_receiver(e: Env, caller: Address, fee_receiver: Address);
 
-    fn get_fee_receiver(e: Env) -> Result<Address, ContractError>;
+//     fn get_fee_receiver(e: Env) -> Result<Address, ContractError>;
 
-    fn set_manager(e: Env, manager: Address);
+//     fn set_manager(e: Env, manager: Address);
 
-    fn get_manager(e: Env) -> Result<Address, ContractError>;
+//     fn get_manager(e: Env) -> Result<Address, ContractError>;
 
-    fn set_emergency_manager(e: Env, emergency_manager: Address);
+//     fn set_emergency_manager(e: Env, emergency_manager: Address);
 
-    fn get_emergency_manager(e: Env) -> Result<Address, ContractError>;
-}
+//     fn get_emergency_manager(e: Env) -> Result<Address, ContractError>;
+// }
