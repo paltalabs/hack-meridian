@@ -31,6 +31,7 @@ use balance::{
     read_balance, 
     receive_balance, 
     spend_balance};
+
 use utils::calculate_periods_since;
 
 
@@ -113,6 +114,8 @@ impl VaultTrait for PayrollVault {
     ) -> Result<(), ContractError> {
         let mut employer_struct = get_employer(&e, &employer);
 
+        // TODO: Check if it has enough balance to pay the employee, notice period
+
         employer_struct.address.require_auth();
 
         if employer_struct.employees.contains_key(employee.clone()) {
@@ -151,7 +154,7 @@ impl VaultTrait for PayrollVault {
     
         for (employee_address, mut work_contract) in employer_struct.employees.iter() {
             let salary = work_contract.salary;
-            let employer_balance = employer_struct.balance;
+            let employer_balance = read_balance(&e, employer.clone());
     
             if employer_balance < salary {
                 return Err(ContractError::InsufficientFunds);
@@ -184,7 +187,7 @@ impl VaultTrait for PayrollVault {
                     &salary,
                 );
     
-                employer_struct.balance -= salary;
+                spend_balance(&e, employer.clone(), salary);
     
                 if !work_contract.is_active {
                     work_contract.notice_period_payments_made += 1;
@@ -234,14 +237,6 @@ impl VaultTrait for PayrollVault {
         Ok(())
     }
 
-    fn balance(e: Env, id: Address) -> i128 {
-        e.storage()
-            .instance()
-            .extend_ttl(INSTANCE_LIFETIME_THRESHOLD, INSTANCE_BUMP_AMOUNT);
-        read_balance(&e, id)
-    }
-
-
     // READ FUNCTION
 
     // get employer balance
@@ -249,8 +244,10 @@ impl VaultTrait for PayrollVault {
         e: Env, 
         employer: Address
     ) -> i128 {
-        let employer_struct = get_employer(&e, &employer);
-        employer_struct.balance
+        e.storage()
+            .instance()
+            .extend_ttl(INSTANCE_LIFETIME_THRESHOLD, INSTANCE_BUMP_AMOUNT);
+        read_balance(&e, employer)
     }
 
     // get employee available balanbce to withdraw now

@@ -6,7 +6,6 @@ use soroban_sdk::{
 #[derive(Clone, Debug, Eq, PartialEq)]
 pub struct Employer {
     pub address: Address,
-    pub balance: i128,
     pub employees: Map<Address, WorkContract>,
 }
 

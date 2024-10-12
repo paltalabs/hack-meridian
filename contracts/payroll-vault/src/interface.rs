@@ -82,8 +82,6 @@ pub trait VaultTrait {
 
     fn asset(e: Env) -> Address;
 
-    fn balance(e: Env, id: Address) -> i128;
-
     // /// get employer health 
 
 
