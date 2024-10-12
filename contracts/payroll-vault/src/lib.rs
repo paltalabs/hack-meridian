@@ -87,11 +87,11 @@ impl VaultTrait for PayrollVault {
         Ok(())
     }
 
-    fn claim_salary(
+    fn pay_employees(
         _e: Env,
-        _employee: Address,
-    ) -> Result<i128, ContractError> {
-        Ok(0i128)
+        _employer: Address,
+    ) -> Result<(), ContractError> {
+        Ok(())
     }
 
     // this can only be done by the employer

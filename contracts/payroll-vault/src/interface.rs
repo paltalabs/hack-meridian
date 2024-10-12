@@ -53,10 +53,10 @@ pub trait VaultTrait {
         notice_period: i128, // how many payment periods before the employee can be fired
     ) -> Result<(), ContractError>;
 
-    fn claim_salary(
+    fn pay_employees(
         e: Env,
-        employee: Address,
-    ) -> Result<i128, ContractError>;
+        employer: Address,
+    ) -> Result<(), ContractError>;
 
     // this can only be done by the employer
     // 
