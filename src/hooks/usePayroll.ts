@@ -5,12 +5,17 @@ import { TxResponse, contractInvoke } from '@soroban-react/contracts';
 import { fetchPayrollAddress } from "@/utils/payrollVault"; // Assuming this is where you have the fetchPayrollAddress function
 
 export enum PayrollVaultMethod {
+    INITIALIZE = "initialize",
     DEPOSIT = "deposit",
     WITHDRAW = "withdraw",
+    EMPLOY = "employ",
+    PAY_EMPLOYEES = "pay_employees",
+    FIRE = "fire",
     BALANCE = "balance",
-    GETMANAGER = "get_manager",
-    GETFEERECEIVER = "get_fee_receiver",
-    EMERGENCY_WITHDRAW = "emergency_withdraw",
+    EMPLOYER_BALANCE = "employer_balance",
+    EMPLOYEE_AVAILABLE_BALANCE = "employee_available_balance",
+    EMPLOYER_EMPLOYEE_INFO = "employer_employee_info",
+    ASSET = "asset"
 }
 
 const isObject = (val: unknown) => typeof val === 'object' && val !== null && !Array.isArray(val);
