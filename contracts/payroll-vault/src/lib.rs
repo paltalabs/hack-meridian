@@ -9,6 +9,7 @@ mod error;
 mod interface;
 mod models;
 mod storage;
+mod test;
 
 use interface::{VaultTrait};
 pub use error::ContractError;
