@@ -131,9 +131,11 @@ impl VaultTrait for PayrollVault {
 
     // get employer balance
     fn employer_balance(
-        _e: Env, 
-        _employee: Address) -> i128 {
-        0i128
+        e: Env, 
+        employer: Address
+    ) -> i128 {
+        let employer_struct = get_employer(&e, &employer);
+        employer_struct.balance
     }
 
     // get employee available balanbce to withdraw now

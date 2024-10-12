@@ -69,7 +69,7 @@ pub trait VaultTrait {
     // READ FUNCTION
 
     // get employer balance
-    fn employer_balance(e: Env, employee: Address) -> i128;
+    fn employer_balance(e: Env, employer: Address) -> i128;
 
     // get employee available balanbce to withdraw now
     fn employee_available_balance(e: Env, employee: Address) -> i128;
