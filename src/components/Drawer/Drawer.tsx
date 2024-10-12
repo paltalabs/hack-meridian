@@ -11,7 +11,7 @@ export const ProfileDrawer = ({ isOpen, onClose }: { isOpen: boolean, onClose: (
   return (
     <>
       <Drawer placement={'left'} onClose={onClose} isOpen={isOpen}>
-        <DrawerOverlay />
+        <DrawerOverlay backdropFilter={'blur(10px)'} />
         <DrawerContent>
           <DrawerHeader borderBottomWidth='1px'>
             <Grid templateColumns={'repeat(12, 1fr)'}>
