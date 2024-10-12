@@ -1,5 +1,5 @@
 use soroban_sdk::{
-    Address, Env, String, Vec};
+    Address, Env, String};
 
 use crate::{
     // models::{Asset, Strategy},
@@ -72,9 +72,6 @@ pub trait VaultTrait {
 
     // get employee available balanbce to withdraw now
     fn employee_available_balance(e: Env, employee: Address) -> i128;
-
-    // get employer employee information
-    fn employer_employee_info(e: Env, employer: Address, employee: Address) -> i128;
 
     fn get_employer(e: Env, employer_address: Address) -> Employer;
 

@@ -280,18 +280,9 @@ impl VaultTrait for PayrollVault {
         0i128
     }
 
-    // get employer employee information
-    fn employer_employee_info(
-        _e: Env,
-        _employer: Address,
-        _employee: Address) -> i128 {
-        0i128
-    }
-
     fn get_employer(e: Env, employer_address: Address) -> Employer {
         get_employer(&e, &employer_address)
     }
-
 
     fn asset(e: Env) -> Address {
         get_asset(&e)
