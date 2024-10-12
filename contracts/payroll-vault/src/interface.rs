@@ -50,6 +50,14 @@ pub trait VaultTrait {
         payment_period: PaymentPeriod, // enum weekly monthly or anually
         salary: i128,
         notice_period: u64, // how many payment periods before the employee can be fired
+        work_contract_document_hash: String,
+    ) -> Result<(), ContractError>;
+
+    fn accept_work(
+        e: Env,
+        employer: Address,
+        employee: Address,
+        accept_work: bool,
     ) -> Result<(), ContractError>;
 
     fn pay_employees(
