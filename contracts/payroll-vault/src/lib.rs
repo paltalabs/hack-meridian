@@ -168,7 +168,6 @@ impl VaultTrait for PayrollVault {
             employment_end_date: None,
             last_payment_date: now,
 
-            is_active: true,
             notice_period_payments_made: 0,
         };
     
@@ -180,7 +179,6 @@ impl VaultTrait for PayrollVault {
         Ok(())
     }
 
-    // 
     fn pay_employees(
         e: Env,
         employer: Address,
@@ -266,13 +264,12 @@ impl VaultTrait for PayrollVault {
             .get(employee.clone())
             .ok_or(ContractError::EmployeeNotFound)?;
     
-        if !work_contract.is_active {
-            return Err(ContractError::EmployeeAlreadyFired);
+        match work_contract.employment_end_date {
+            Some(_) => return Err(ContractError::EmployeeAlreadyFired),
+            None => {
+                work_contract.employment_end_date = Some(e.ledger().timestamp());
+            }
         }
-    
-        work_contract.is_active = false;
-        work_contract.employment_end_date = Some(e.ledger().timestamp());
-        work_contract.notice_period_payments_made = 0;
     
         employer_struct
             .employees

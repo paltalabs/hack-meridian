@@ -36,12 +36,11 @@ fn test_employ() {
     let work_contract = employer_struct.employees.get(employee_0.clone()).unwrap();
     assert_eq!(work_contract.salary, salary);
     assert_eq!(work_contract.notice_periods_required, notice_periods_required);
-    assert_eq!(work_contract.is_active, true);
     assert_eq!(work_contract.employment_start_date, 0);
     assert_eq!(work_contract.employment_end_date, None);
     assert_eq!(work_contract.last_payment_date, 0);
     assert_eq!(work_contract.notice_period_payments_made, 0);
-    
+
 }
 
 #[test]
