@@ -17,7 +17,7 @@ export const useEmployer = (network: string) => {
     const dispatch = useDispatch(); // Redux dispatch
     const [error, setError] = useState<string | null>(null);
 
-    const vaultAddress = "CCGYQC6F54HD56XGJQ5JJSD23JCAFSP4KVM7FPVDFEWHLWH67ESX4I7M" // TODO_ADDRESS
+    const vaultAddress = "CCM5YQVMKWVLQ4QQ54KWN27LJOBQBA6XU2LGENWDEFZF4JTO5L2VCA6Z" // TODO_ADDRESS
     useEffect(() => {
         const fetchEmployerDetails = async () => {
             try {
