@@ -9,14 +9,37 @@ mod interface;
 mod models;
 mod storage;
 mod test;
+mod balance;
 mod utils;
 
 use interface::VaultTrait;
 pub use error::ContractError;
 
 use storage::{
-    get_asset, get_employer, has_asset, set_asset, set_employer};
+    DAY_IN_LEDGERS,
+INSTANCE_BUMP_AMOUNT,
+INSTANCE_LIFETIME_THRESHOLD,
+BALANCE_BUMP_AMOUNT,
+BALANCE_LIFETIME_THRESHOLD,
+    get_asset, 
+    get_employer, 
+    has_asset, 
+    set_asset, 
+    set_employer};
+
+use balance::{
+    read_balance, 
+    receive_balance, 
+    spend_balance};
 use utils::calculate_periods_since;
+
+
+fn check_nonnegative_amount(amount: i128) {
+    if amount < 0 {
+        panic!("negative amount is not allowed: {}", amount)
+    }
+}
+    
 
 #[contract]
 pub struct PayrollVault;
@@ -40,10 +63,24 @@ impl VaultTrait for PayrollVault {
     // employerposits amount into employers balance
     // this can be called from a POS terminal
     fn deposit(
-        _e: Env,
-        _employer: Address,
-        _amount: Vec<i128>,
+        e: Env,
+        caller: Address,
+        employer: Address,
+        amount: i128,
     ) -> Result<(), ContractError> {
+        caller.require_auth();
+        check_nonnegative_amount(amount);
+
+        e.storage()
+            .instance()
+            .extend_ttl(INSTANCE_LIFETIME_THRESHOLD, INSTANCE_BUMP_AMOUNT);
+        
+        // caller sends amount to this contract
+        TokenClient::new(&e, &get_asset(&e)).transfer(&caller, &e.current_contract_address(), &amount);
+
+        receive_balance(&e, employer.clone(), amount); // we record the balance of the employer
+
+        // event
         Ok(())
     }
 
@@ -191,6 +228,14 @@ impl VaultTrait for PayrollVault {
         set_employer(&e, employer, employer_struct);
         Ok(())
     }
+
+    fn balance(e: Env, id: Address) -> i128 {
+        e.storage()
+            .instance()
+            .extend_ttl(INSTANCE_LIFETIME_THRESHOLD, INSTANCE_BUMP_AMOUNT);
+        read_balance(&e, id)
+    }
+
 
     // READ FUNCTION
 
