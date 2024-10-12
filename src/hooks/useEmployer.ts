@@ -17,6 +17,7 @@ export const useEmployer = (network: string) => {
     const dispatch = useDispatch(); // Redux dispatch
     const [error, setError] = useState<string | null>(null);
 
+    const vaultAddress = "CCUWKBOGIYZK7HVIMYJAA65WILSV6GEFFQHJJFACHIKOANR2556IXXDV"
     useEffect(() => {
         const fetchEmployerDetails = async () => {
             try {
@@ -26,7 +27,7 @@ export const useEmployer = (network: string) => {
                 }
 
                 // Call the contract to get the employer details
-                const employerData: any = await invokePayrollVault(PayrollVaultMethod.GET_EMPLOYER, [
+                const employerData: any = await invokePayrollVault(vaultAddress, PayrollVaultMethod.GET_EMPLOYER, [
                     (new Address(address)).toScVal(), // Convert the address to ScVal type
                 ]);
 

@@ -16,32 +16,21 @@ export enum PayrollVaultMethod {
     ASSET = "asset"
 }
 
+export enum PaymentPeriod {
+    WEEKLY = 0,
+    MONTHLY = 1,
+    ANNUALY = 2,
+}
+
 const isObject = (val: unknown) => typeof val === 'object' && val !== null && !Array.isArray(val);
 
 export function usePayrollVault(network: string) {
     const sorobanContext = useSorobanReact();
-    const [vaultAddress, setVaultAddress] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
-
-    // Fetch the payroll vault address when the hook is first used or when the network changes
-    useEffect(() => {
-        const fetchAddress = async () => {
-            try {
-                const address = await fetchPayrollAddress(network);
-                // Ensure that the address is not undefined before setting the state
-                setVaultAddress(address || null);
-            } catch (err) {
-                setError(`Error fetching payroll vault address: ${err}`);
-                setVaultAddress(null); // Reset vault address to null on error
-            }
-        };
-
-        fetchAddress();
-    }, [network]);
 
     // Callback to interact with the payroll vault contract
     const invokePayrollVault = useCallback(
-        async (method: PayrollVaultMethod, args?: StellarSdk.xdr.ScVal[], signAndSend?: boolean) => {
+        async (vaultAddress: string, method: PayrollVaultMethod, args?: StellarSdk.xdr.ScVal[], signAndSend?: boolean) => {
             if (!vaultAddress) {
                 throw new Error("Payroll vault address not available");
             }
@@ -63,8 +52,8 @@ export function usePayrollVault(network: string) {
             ) throw result;
             return result;
         },
-        [sorobanContext, vaultAddress]
+        [sorobanContext]
     );
 
-    return { invokePayrollVault, vaultAddress, error };
+    return { invokePayrollVault, error };
 }
