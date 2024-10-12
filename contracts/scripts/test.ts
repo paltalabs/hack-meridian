@@ -1,31 +1,20 @@
-import { Address, nativeToScVal, xdr } from '@stellar/stellar-sdk';
-import { AddressBook } from '../utils/address_book.js';
-import { invokeContract } from '../utils/contract.js';
-import { config } from '../utils/env_config.js';
-import { getCurrentTimePlusOneHour } from '../utils/tx.js';
+import { AddressBook } from "../utils/address_book.js";
+import { airdropAccount } from "../utils/contract.js";
+import { config } from "../utils/env_config.js";
 
-export async function testSoroswapAdapter(addressBook: AddressBook) {
-  console.log('-------------------------------------------------------');
-  console.log('Testing');
-  console.log('-------------------------------------------------------');
-
-  const params: xdr.ScVal[] = [
-    nativeToScVal("gg", {type: "string"})
-  ];
-
-  await invokeContract(
-    'greeting',
-    addressBook,
-    'set_title',
-    params,
-    loadedConfig.admin
+export async function test_factory(addressBook: AddressBook) {
+  if (network != "mainnet") await airdropAccount(loadedConfig.admin);
+  let account = await loadedConfig.horizonRpc.loadAccount(
+    loadedConfig.admin.publicKey()
   );
-
+  console.log("publicKey", loadedConfig.admin.publicKey());
+  let balance = account.balances.filter((item) => item.asset_type == "native");
+  console.log("Current Admin account balance:", balance[0].balance);
 }
 
 const network = process.argv[2];
+const addressBook = AddressBook.loadFromFile(network);
+
 const loadedConfig = config(network);
 
-const addressBook = AddressBook.loadFromFile(network, loadedConfig);
-
-await testSoroswapAdapter(addressBook);
+await test_factory(addressBook);
