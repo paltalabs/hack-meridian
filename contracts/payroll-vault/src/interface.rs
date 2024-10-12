@@ -28,8 +28,9 @@ pub trait VaultTrait {
         // this can be called from a POS terminal
     fn deposit(
         e: Env,
+        caller: Address,
         employer: Address,
-        amount: Vec<i128>,
+        amount: i128,
     ) -> Result<(), ContractError>;
 
     // withdraw: employer can withdraw funds
@@ -69,7 +70,7 @@ pub trait VaultTrait {
     // READ FUNCTION
 
     // get employer balance
-    fn employer_balance(e: Env, employee: Address) -> i128;
+    fn employer_balance(e: Env, employer: Address) -> i128;
 
     // get employee available balanbce to withdraw now
     fn employee_available_balance(e: Env, employee: Address) -> i128;
@@ -80,6 +81,8 @@ pub trait VaultTrait {
     fn get_employer(e: Env, employer_address: Address) -> Employer;
 
     fn asset(e: Env) -> Address;
+
+    fn balance(e: Env, id: Address) -> i128;
 
     // /// get employer health 
 
