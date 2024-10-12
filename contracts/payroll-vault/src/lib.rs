@@ -15,7 +15,7 @@ use interface::{VaultTrait};
 pub use error::ContractError;
 
 use storage::{
-    // get_asset, 
+    get_asset, 
     has_asset, 
     set_asset};
 
@@ -113,5 +113,9 @@ impl VaultTrait for PayrollVault {
         _employer: Address,
         _employee: Address) -> i128 {
         0i128
+    }
+
+    fn asset(e: Env) -> Address {
+        get_asset(&e)
     }
 }
