@@ -44,6 +44,11 @@ fn test_pay_employees() {
         &notice_periods_required,
         &work_contract_document_hash);
     
+    test.contract.accept_work(
+        &test.employer, 
+        &employee_0,
+        &true);
+    
     // time has passed // 30 days has passed
     let new_time = 30 * 24 * 60 * 60 +1;
     test.env.ledger().with_mut(|li| {
@@ -147,6 +152,11 @@ fn test_pay_employees_multiple_employees() {
         &notice_periods_required,
         &work_contract_document_hash);
     
+    test.contract.accept_work(
+        &test.employer, 
+        &employee_0,
+        &true);
+    
     // Employ someone
     let employee_1 = Address::generate(&test.env);
     let salary = 1_000_000;
@@ -162,6 +172,11 @@ fn test_pay_employees_multiple_employees() {
         &salary, 
         &notice_periods_required,
         &work_contract_document_hash);
+
+    test.contract.accept_work(
+        &test.employer, 
+        &employee_1,
+        &true);
     
     // time has passed // 30 days has passed
     let new_time = 30 * 24 * 60 * 60 +1;

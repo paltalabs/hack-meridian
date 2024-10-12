@@ -13,6 +13,9 @@ pub struct Employer {
 
 #[contracttype]
 #[derive(Clone, Debug, Eq, PartialEq)]
+// employment_start_date is None until the employee accepts the contract.
+// if the employee does noe accets the contracts, it gets removed
+
 pub struct WorkContract {
     pub employee: Employee,
 
@@ -21,12 +24,10 @@ pub struct WorkContract {
 
     pub salary: i128,
     
-    pub employment_start_date: u64,              // Clarified to indicate employment start date
+    pub employment_start_date: Option<u64>,      // Clarified to indicate employment start date
     pub employment_end_date: Option<u64>,        // Renamed for employment end date (if applicable)
-    pub last_payment_date: u64,                  // More explicit name for last payment date
+    pub last_payment_date: Option<u64>,                  // More explicit name for last payment date
     
-    pub notice_period_payments_made: i128, //
-
     pub work_contract_document_hash: String,
 }
 

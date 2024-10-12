@@ -53,6 +53,13 @@ pub trait VaultTrait {
         work_contract_document_hash: String,
     ) -> Result<(), ContractError>;
 
+    fn accept_work(
+        e: Env,
+        employer: Address,
+        employee: Address,
+        accept_work: bool,
+    ) -> Result<(), ContractError>;
+
     fn pay_employees(
         e: Env,
         employer: Address,

@@ -54,7 +54,6 @@ fn test_fire_employee_successful() {
         .get(employee.clone())
         .unwrap();
     assert!(work_contract.employment_end_date.is_some());
-    assert_eq!(work_contract.notice_period_payments_made, 0);
 }
 
 #[test]
