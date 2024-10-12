@@ -6,7 +6,7 @@ use soroban_sdk::{
 
 use crate::{
     // models::{Asset, Strategy},
-    models::PaymentPeriod, ContractError
+    models::{Employer, PaymentPeriod}, ContractError
 };
 
 pub trait VaultTrait {
@@ -76,6 +76,8 @@ pub trait VaultTrait {
 
     // get employer employee information
     fn employer_employee_info(e: Env, employer: Address, employee: Address) -> i128;
+
+    fn get_employer(e: Env, employer_address: Address) -> Employer;
 
     fn asset(e: Env) -> Address;
 

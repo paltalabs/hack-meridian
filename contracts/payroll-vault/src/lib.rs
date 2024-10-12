@@ -1,5 +1,5 @@
 #![no_std]
-use models::{PaymentPeriod, WorkContract};
+use models::{Employer, PaymentPeriod, WorkContract};
 use soroban_sdk::{
     contract, contractimpl, // panic_with_error,
     // token::{TokenClient, TokenInterface},
@@ -127,6 +127,11 @@ impl VaultTrait for PayrollVault {
         _employee: Address) -> i128 {
         0i128
     }
+
+    fn get_employer(e: Env, employer_address: Address) -> Employer {
+        get_employer(&e, &employer_address)
+    }
+
 
     fn asset(e: Env) -> Address {
         get_asset(&e)
