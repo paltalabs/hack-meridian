@@ -1,3 +1,10 @@
+use soroban_sdk::{
+    Address, 
+           testutils::{
+        Address as _,
+    },
+};
+
 use crate::test::PaymentVaultTest;
 use crate::test::payroll_vault::ContractError;
 
@@ -29,7 +36,19 @@ fn test_deposit_employer_is_caller() {
     assert_eq!(test.contract.employer_balance(&test.employer), deposit_amount + deposit_amount2);
     assert_eq!(test.token.balance(&test.employer), initial_employer_asset_balance - deposit_amount - deposit_amount2);
     assert_eq!(test.token.balance(&test.contract.address), deposit_amount + deposit_amount2);
-    
+
+    // can deposit again with same amount
+    let employer_2 = Address::generate(&test.env);
+    test.token.mint(&employer_2, &1_000_000_000_000);
+    // another employer also can deposit
+    test.contract.deposit(&employer_2, &employer_2, &deposit_amount2);
+    // test new balances
+    assert_eq!(test.contract.employer_balance(&test.employer), deposit_amount + deposit_amount2);
+    assert_eq!(test.contract.employer_balance(&employer_2), deposit_amount2);
+    assert_eq!(test.token.balance(&test.employer), initial_employer_asset_balance - deposit_amount - deposit_amount2);
+    assert_eq!(test.token.balance(&employer_2), 1_000_000_000_000 - deposit_amount2);
+    assert_eq!(test.token.balance(&test.contract.address), deposit_amount + deposit_amount2 + deposit_amount2);
+
 }
  
 
