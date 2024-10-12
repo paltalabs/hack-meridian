@@ -1,7 +1,7 @@
 #![no_std]
 use models::{Employer, PaymentPeriod, WorkContract};
 use soroban_sdk::{
-    contract, contractimpl, Address, Env, Map, Vec // Map, String,
+    contract, contractimpl, Address, Env, Vec // Map, String,
 };
 
 mod error;
@@ -63,12 +63,15 @@ impl VaultTrait for PayrollVault {
         e: Env,
         employer: Address,
         employee: Address,
-        // payment period should be enum weekly monthly or anually
         payment_period: PaymentPeriod,
         salary: i128,
         notice_period: i128, // how many payment periods before the employee can be fired
     ) -> Result<(), ContractError> {
         let mut employer_struct = get_employer(&e, &employer);
+
+        if employer_struct.employees.contains_key(employee.clone()) {
+            return Err(ContractError::AlreadyEmployed);
+        }
 
         let work_contract = WorkContract {
             employee: models::Employee {
@@ -79,21 +82,7 @@ impl VaultTrait for PayrollVault {
             notice_period,
         };
 
-        employer_struct.employees.push_back(work_contract.clone());
-
-
-        // /////////////// IF MAP IS USED ///////////////////////
-
-        // let mut new_map: Map<Address, WorkContract> = Map::new(&e);
-
-        // // This would replace existent employee or we could return AlreadyEmployed if the employee is already employed
-        // new_map.set(employee.clone(), work_contract);
-
-        // new_map.iter().for_each(|(_k, _v)| {
-        //     // Here we can pay to all employees
-        // }); 
-
-        // let employees = new_map.get(employee.clone()).unwrap();
+        employer_struct.employees.set(employee, work_contract.clone());
 
         set_employer(&e, employer, employer_struct);
         Ok(())

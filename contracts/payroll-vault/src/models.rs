@@ -1,5 +1,5 @@
 use soroban_sdk::{
-    contracttype, Address, Vec,
+    contracttype, Address, Map
 };
 
 #[contracttype]
@@ -7,7 +7,7 @@ use soroban_sdk::{
 pub struct Employer {
     pub address: Address,
     pub balance: i128,
-    pub employees: Vec<WorkContract>,
+    pub employees: Map<Address, WorkContract>,
 }
 
 #[contracttype]

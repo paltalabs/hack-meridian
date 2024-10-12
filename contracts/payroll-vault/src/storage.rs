@@ -1,7 +1,5 @@
 use soroban_sdk::{
-    contracttype,
-    Address,
-    Env, Vec,
+    contracttype, Address, Env, Map
     //Vec
 };
 
@@ -35,5 +33,5 @@ pub fn set_employer(e: &Env, employer_address: Address, employer: Employer) {
 
 pub fn get_employer(e: &Env, employer_address: &Address) -> Employer {
     let key = DataKey::Employer(employer_address.clone());
-    e.storage().instance().get(&key).unwrap_or(Employer{address: employer_address.clone(), balance: 0, employees: Vec::new(e)})
+    e.storage().instance().get(&key).unwrap_or(Employer{address: employer_address.clone(), balance: 0, employees: Map::new(e)})
 }

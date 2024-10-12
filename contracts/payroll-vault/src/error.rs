@@ -7,4 +7,5 @@ pub enum ContractError {
     // Initialization Errors (10x)
     NotInitialized = 100,
     AlreadyInitialized = 101,
+    AlreadyEmployed = 102,
 }
