@@ -69,6 +69,8 @@ impl VaultTrait for PayrollVault {
     ) -> Result<(), ContractError> {
         let mut employer_struct = get_employer(&e, &employer);
 
+        employer_struct.address.require_auth();
+
         if employer_struct.employees.contains_key(employee.clone()) {
             return Err(ContractError::AlreadyEmployed);
         }
@@ -93,6 +95,7 @@ impl VaultTrait for PayrollVault {
         employer: Address,
     ) -> Result<(), ContractError> {
         let mut employer_struct = get_employer(&e, &employer);
+        employer_struct.address.require_auth();
 
         let asset = get_asset(&e);
 
