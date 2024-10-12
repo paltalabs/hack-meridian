@@ -32,7 +32,7 @@ use balance::{
     receive_balance, 
     spend_balance};
 
-use utils::calculate_periods_since;
+use utils::{calculate_periods_since, calculate_periods_amounts_in_seconds};
 
 
 fn check_nonnegative_amount(amount: i128) {
@@ -200,7 +200,7 @@ impl VaultTrait for PayrollVault {
                     employment_end_date, 
                     current_timestamp, 
                     work_contract.payment_period,
-                ) > work_contract.notice_periods_required as i128 => {
+                ) > work_contract.notice_periods_required => {
                     continue; // this person has been fired
                     employer_struct.employees.remove(employee_address.clone());
                 }
@@ -217,7 +217,7 @@ impl VaultTrait for PayrollVault {
                 continue;
             }
 
-            let salary_to_pay = work_contract.salary * periods_since_last_payment;
+            let salary_to_pay = work_contract.salary * periods_since_last_payment as i128;
             let employer_balance = read_balance(&e, employer.clone());
     
             if employer_balance < salary_to_pay {
@@ -240,7 +240,12 @@ impl VaultTrait for PayrollVault {
 
             // TODO This is bad if the payment is made days after the end of a period
             // TODO FIX THIS
-            work_contract.last_payment_date = current_timestamp;
+            // last payment date + periods since last payment * payment period
+            work_contract.last_payment_date = work_contract.last_payment_date + calculate_periods_amounts_in_seconds(
+                periods_since_last_payment,
+                work_contract.payment_period,
+            );
+
             employer_struct.employees.set(employee_address.clone(), work_contract);
         }
     

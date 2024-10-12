@@ -25,7 +25,7 @@ fn test_fire_employee_successful() {
     let employee = Address::generate(&test.env);
 
     let salary = 1000i128;
-    let notice_period = 2i128;
+    let notice_period = 2u64;
     let payment_period = PaymentPeriod::Monthly;
     let employee_name = String::from_str(&test.env, "Alice");
 
@@ -52,7 +52,7 @@ fn test_fire_employee_successful() {
         .get(employee.clone())
         .unwrap();
     assert_eq!(work_contract.is_active, false);
-    assert!(work_contract.unemployed_at.is_some());
+    assert!(work_contract.employment_end_date.is_some());
     assert_eq!(work_contract.notice_period_payments_made, 0);
 }
 
@@ -103,7 +103,7 @@ fn test_fire_employee_already_fired() {
     // Employer employs an employee
     let employee = Address::generate(&test.env);
     let salary = 1000i128;
-    let notice_period = 2i128;
+    let notice_period = 2u64;
     let payment_period = PaymentPeriod::Monthly;
     let employee_name = String::from_str(&test.env, "Bob");
 

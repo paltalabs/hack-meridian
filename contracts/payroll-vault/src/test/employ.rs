@@ -29,6 +29,19 @@ fn test_employ() {
     let notice_periods_required = 1;
     let name = String::from_str(&test.env, "Alice");
     test.contract.employ(&test.employer, &employee_0, &name, &crate::test::payroll_vault::PaymentPeriod::Monthly, &salary, &notice_periods_required);
+
+    // check that we get the information of the employee
+    let employer_struct = test.contract.get_employer(&test.employer);
+    assert!(employer_struct.employees.contains_key(employee_0.clone()));
+    let work_contract = employer_struct.employees.get(employee_0.clone()).unwrap();
+    assert_eq!(work_contract.salary, salary);
+    assert_eq!(work_contract.notice_periods_required, notice_periods_required);
+    assert_eq!(work_contract.is_active, true);
+    assert_eq!(work_contract.employment_start_date, 0);
+    assert_eq!(work_contract.employment_end_date, None);
+    assert_eq!(work_contract.last_payment_date, 0);
+    assert_eq!(work_contract.notice_period_payments_made, 0);
+    
 }
 
 #[test]
