@@ -1,4 +1,5 @@
 #![no_std]
+use models::{Employer, PaymentPeriod, WorkContract};
 use soroban_sdk::{
     contract, contractimpl, // panic_with_error,
     // token::{TokenClient, TokenInterface},
@@ -11,13 +12,11 @@ mod models;
 mod storage;
 mod test;
 
-use interface::{VaultTrait};
+use interface::VaultTrait;
 pub use error::ContractError;
 
 use storage::{
-    get_asset, 
-    has_asset, 
-    set_asset};
+    get_asset, get_employer, has_asset, set_asset, set_employer};
 
 #[contract]
 pub struct PayrollVault;
@@ -63,22 +62,36 @@ impl VaultTrait for PayrollVault {
     // <employee, employer> -> <payment_period, salary, notice_period>
     // this function should take 
     fn employ(
-        _e: Env,
-        _employer: Address,
-        _employee: Address,
+        e: Env,
+        employer: Address,
+        employee: Address,
         // payment period should be enum weekly monthly or anually
-        _payment_period: i128,
-        _salary: i128,
-        _notice_period: i128, // how many payment periods before the employee can be fired
+        payment_period: PaymentPeriod,
+        salary: i128,
+        notice_period: i128, // how many payment periods before the employee can be fired
     ) -> Result<(), ContractError> {
+        let mut employer_struct = get_employer(&e, &employer);
+
+        let work_contract = WorkContract {
+            employee: models::Employee {
+                address: employee,
+            },
+            payment_period,
+            salary,
+            notice_period,
+        };
+
+        employer_struct.employees.push_back(work_contract);
+
+        set_employer(&e, employer, employer_struct);
         Ok(())
     }
 
-    fn claim_salary(
+    fn pay_employees(
         _e: Env,
-        _employee: Address,
-    ) -> Result<i128, ContractError> {
-        Ok(0i128)
+        _employer: Address,
+    ) -> Result<(), ContractError> {
+        Ok(())
     }
 
     // this can only be done by the employer
@@ -114,6 +127,11 @@ impl VaultTrait for PayrollVault {
         _employee: Address) -> i128 {
         0i128
     }
+
+    fn get_employer(e: Env, employer_address: Address) -> Employer {
+        get_employer(&e, &employer_address)
+    }
+
 
     fn asset(e: Env) -> Address {
         get_asset(&e)
