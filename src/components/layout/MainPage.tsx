@@ -9,6 +9,7 @@ import { Address, scValToNative } from '@stellar/stellar-sdk'
 import { TradContractsAccordion } from '../Accordion/TradContractsAccorrdion'
 import { Stack, Text } from '@chakra-ui/react'
 import { setBalance, setName } from '@/store/features/employerStore'
+import { CreateContractModal } from '../Modals/CreateContractModal'
 
 export const MainPage = () => {
   const sorobanContext = useSorobanReact()
@@ -52,12 +53,14 @@ export const MainPage = () => {
 
 
   }, [address, activeChain])
+  const [isCreateContractModalOpen, setIsCreateContractModalOpen] = useState<boolean>(false)
 
   if (!address) return null;
   return (
     <>
       <ProfileDrawer isOpen={isDrawerOpen} onClose={() => { setIsDrawerOpen(false) }} />
-      <SearchBar handleOpenDrawer={setIsDrawerOpen} />
+      <SearchBar handleOpenDrawer={setIsDrawerOpen} handleCreateContract={setIsCreateContractModalOpen} />
+      <CreateContractModal isOpen={isCreateContractModalOpen} onClose={setIsCreateContractModalOpen} />
       <Stack>
         <Text>Business account balance:</Text>
         <Text as={'b'} fontSize={'3xl'}>$ 1000</Text>

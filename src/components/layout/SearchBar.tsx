@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { Avatar, Grid, GridItem, IconButton, Input, InputGroup, InputLeftElement, InputRightElement } from '@chakra-ui/react'
 import { AddIcon, Search2Icon } from '@chakra-ui/icons'
 
-export const SearchBar = ({ handleOpenDrawer }: { handleOpenDrawer: (value: boolean) => void; }) => {
+export const SearchBar = ({ handleOpenDrawer, handleCreateContract }: { handleOpenDrawer: (value: boolean) => void, handleCreateContract: (value: boolean) => void }) => {
   const { address } = useSorobanReact()
 
   if (!address) return null;
@@ -24,6 +24,7 @@ export const SearchBar = ({ handleOpenDrawer }: { handleOpenDrawer: (value: bool
           />
           <InputRightElement>
             <IconButton
+              onClick={() => handleCreateContract(true)}
               rounded={32}
               size={'sm'}
               aria-label="search-Vault"

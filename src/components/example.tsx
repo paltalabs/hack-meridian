@@ -84,6 +84,7 @@ export const Example = () => {
         const employer = new Address(address);
         const amount = nativeToScVal(100000_0000000, { type: 'i128' })
 
+
         const depositParams = [
             caller.toScVal(),
             employer.toScVal(),
