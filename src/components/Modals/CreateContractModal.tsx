@@ -6,7 +6,7 @@ import { Address, nativeToScVal } from "@stellar/stellar-sdk"
 import { PaymentPeriod, PayrollVaultMethod, usePayrollVaultCallback } from '@/hooks/usePayroll'
 import { fetchPayrollAddress } from '@/utils/payrollVault'
 
-export const CreateContractModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: (value: boolean) => void, hire: Function }) => {
+export const CreateContractModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: (value: boolean) => void }) => {
   const { address, activeChain } = useSorobanReact()
 
   const [fullName, setFullName] = useState('')
