@@ -18,6 +18,7 @@ const HomePage: NextPage = () => {
           <MainPage />
         )}
         {/* <Example /> */}
+        <Example />
       </CenterBody>
     </>
   )

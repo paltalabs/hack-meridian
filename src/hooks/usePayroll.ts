@@ -1,4 +1,4 @@
-import { useSorobanReact } from "@soroban-react/core";
+import { SorobanContextType, useSorobanReact } from "@soroban-react/core";
 import { useCallback, useState, useEffect } from "react";
 import * as StellarSdk from '@stellar/stellar-sdk';
 import { TxResponse, contractInvoke } from '@soroban-react/contracts';
@@ -24,12 +24,11 @@ export enum PaymentPeriod {
 
 const isObject = (val: unknown) => typeof val === 'object' && val !== null && !Array.isArray(val);
 
-export function usePayrollVault(network: string) {
+export function usePayrollVaultCallback() {
     const sorobanContext = useSorobanReact();
-    const [error, setError] = useState<string | null>(null);
 
     // Callback to interact with the payroll vault contract
-    const invokePayrollVault = useCallback(
+    return useCallback(
         async (vaultAddress: string, method: PayrollVaultMethod, args?: StellarSdk.xdr.ScVal[], signAndSend?: boolean) => {
             if (!vaultAddress) {
                 throw new Error("Payroll vault address not available");
@@ -55,5 +54,5 @@ export function usePayrollVault(network: string) {
         [sorobanContext]
     );
 
-    return { invokePayrollVault, error };
+    // return invokePayrollVault;
 }

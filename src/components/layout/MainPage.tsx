@@ -1,16 +1,46 @@
 import { useSorobanReact } from '@soroban-react/core'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ProfileDrawer } from '../Drawer/Drawer'
 import { SearchBar } from './SearchBar'
+import { useDispatch } from 'react-redux'
+import { PayrollVaultMethod, usePayrollVaultCallback } from '@/hooks/usePayroll'
+import { fetchPayrollAddress } from '@/utils/payrollVault'
+import { Address, scValToNative } from '@stellar/stellar-sdk'
 import { TradContractsAccordion } from '../Accordion/TradContractsAccorrdion'
-import { Avatar, Button, Input, InputGroup, InputLeftElement, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Select, Stack, Text } from '@chakra-ui/react'
-import { AddIcon } from '@chakra-ui/icons'
+import { Stack, Text } from '@chakra-ui/react'
+import { setBalance } from '@/store/features/employerStore'
 import { CreateContractModal } from '../Modals/CreateContractModal'
 
 export const MainPage = () => {
-  const { address } = useSorobanReact()
+  const sorobanContext = useSorobanReact()
+  const { address, activeChain } = sorobanContext
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
-  const [isCreateContractModalOpen, setIsCreateContractModalOpen] = useState<boolean>(true) 
+  const dispatch = useDispatch(); // Redux dispatch
+  const invokePayrollVault = usePayrollVaultCallback(); // Payroll vault hook
+
+  useEffect(() => {
+
+    if (!activeChain || !address) {
+      console.log("Not connected")
+      return;
+    }
+    const vaultAddress = fetchPayrollAddress(activeChain.id)
+    const employer = new Address(address)
+
+    invokePayrollVault(
+      vaultAddress,
+      PayrollVaultMethod.EMPLOYER_BALANCE,
+      [employer.toScVal()],
+      false
+    ).then((result) => {
+      console.log('🚀 ~ ).then ~ result:', result);
+      //@ts-ignore
+      dispatch(setBalance(Number(scValToNative(result))))
+
+    })
+
+  }, [address, activeChain])
+  const [isCreateContractModalOpen, setIsCreateContractModalOpen] = useState<boolean>(true)
 
   if (!address) return null;
   return (
