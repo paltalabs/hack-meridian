@@ -5,6 +5,7 @@ import { BsThreeDotsVertical, BsTrash } from "react-icons/bs";
 import { shortenAddress } from '@/utils/shortenAdress'
 import { useSelector } from 'react-redux';
 import { selectEmployerEmployees } from '@/store/features/employerStore';
+import { FireButton } from '../buttons/FireButton';
 
 export const TradContractsAccordion = () => {
   const { address } = useSorobanReact()
@@ -42,7 +43,7 @@ export const TradContractsAccordion = () => {
                   <GridItem colSpan={10}>
                     <CardBody textAlign={'left'}>
                       <Heading size='md'>{employees[contract].employee.name}</Heading>
-                      <Text fontSize='sm' as={'sub'}>$ {employees[contract].salary / 10000000} - {employees[contract].payment_period}</Text>
+                      <Text fontSize='sm' as={'sub'}>$ {Number(employees[contract].salary) / 10000000} - Notice Period: {employees[contract].payment_period}</Text>
                     </CardBody>
                   </GridItem>
                   <GridItem colSpan={1} justifySelf={'end'}>
@@ -56,7 +57,7 @@ export const TradContractsAccordion = () => {
                 <Text as={'sub'}>Notice {employees[contract].notice_period} weeks before</Text>
                 <CardFooter>
                   <Stack direction='row' spacing={4} align={'center'}>
-                    <IconButton size={'md'} variant={'ghost'} aria-label='delete-contract' icon={<BsTrash />} py={4} />
+                    <FireButton employee={employees[contract].employee.address} />
                     <Button colorScheme='green' size='md' >Review contract</Button>
                   </Stack>
                 </CardFooter>
