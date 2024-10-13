@@ -9,6 +9,7 @@ export interface WorkContract {
     salary: number;
     notice_periods_required: number;
     employment_start_date: number;
+    employment_end_date: number;
     is_active: boolean;
     unemployed_at?: number | null;
     notice_period_payments_made?: number;

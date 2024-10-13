@@ -48,8 +48,14 @@ export const TradContractsAccordion = () => {
                     <CardBody textAlign={'left'}>
                       <Heading size='md'>{employees[contract].employee.name}</Heading>
                       <Text fontSize='sm' as={'sub'}>$ {Number(employees[contract].salary) / 10000000} - Payment Period: {employees[contract].payment_period === PaymentPeriod.Weekly ? "Weekly" : employees[contract].payment_period === PaymentPeriod.Monthly ? "Monthly" : "Yearly"}</Text>
+                    
+                      <Text fontSize='sm' as={'sub'}>
+                         -   Status: 
+                        {employees[contract].employment_end_date ? "Terminated" : employees[contract].employment_start_date ? "Active" : "Pending Signature"}
+                      </Text>
                     </CardBody>
                   </GridItem>
+                  
                   <GridItem colSpan={1} justifySelf={'end'}>
                     <BsThreeDotsVertical />
                   </GridItem>
