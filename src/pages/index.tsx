@@ -12,6 +12,7 @@ const HomePage: NextPage = () => {
   return (
     <>
       <CenterBody tw="mt-4 mb-10 px-5 max-w-full">
+        <Example />
         {!address ? (
           <ConnectButton />
         ) : (
