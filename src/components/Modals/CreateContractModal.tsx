@@ -1,6 +1,6 @@
 import { useSorobanReact } from '@soroban-react/core'
 import React, { useState } from 'react'
-import { Avatar, Button, Icon, Input, InputGroup, InputLeftElement, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Select, Stack, Text } from '@chakra-ui/react'
+import { Avatar, Button, Icon, Input, InputGroup, InputLeftElement, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Select, Stack, Text, useClipboard } from '@chakra-ui/react'
 import { AddIcon } from '@chakra-ui/icons'
 import { Address, nativeToScVal } from "@stellar/stellar-sdk"
 import { PaymentPeriod, PayrollVaultMethod, usePayrollVaultCallback } from '@/hooks/usePayroll'
@@ -18,7 +18,9 @@ export const CreateContractModal = ({ isOpen, onClose }: { isOpen: boolean, onCl
   const [noticePeriod, setNoticePeriod] = useState(0)
 
   const [fileHash, setFileHash] = useState('');
+  const [signUrl, setSignUrl] = useState('');
 
+  const clipboard = useClipboard(signUrl);
 
   const invokePayrollVault = usePayrollVaultCallback()
 
@@ -58,7 +60,8 @@ export const CreateContractModal = ({ isOpen, onClose }: { isOpen: boolean, onCl
         name,
         paymentPeriodScVal,
         salaryScVal,
-        noticePeriodScVal
+        noticePeriodScVal,
+        nativeToScVal(fileHash, {type: "string"})
       ]
 
       result = await invokePayrollVault(
@@ -138,7 +141,7 @@ export const CreateContractModal = ({ isOpen, onClose }: { isOpen: boolean, onCl
                 />
               </InputGroup>
               <InputGroup>
-                <UploadComponent setFileHash={setFileHash} />
+                <UploadComponent setFileHash={setFileHash} setSignUrl={setSignUrl} employee={stellarAddress}/>
               </InputGroup>
               <InputGroup>
                 <Input
@@ -149,7 +152,8 @@ export const CreateContractModal = ({ isOpen, onClose }: { isOpen: boolean, onCl
                   disabled
                 />
               </InputGroup>
-                
+              <Text>{signUrl}</Text>
+              <Button onClick={clipboard.onCopy}>Copy Sign URL</Button>
             </Stack>
           </ModalBody>
 

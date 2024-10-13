@@ -2,6 +2,8 @@ import { ReactNode, useRef } from 'react'
 import { Button, Flex, FormControl, FormErrorMessage, FormLabel, Icon, InputGroup } from '@chakra-ui/react'
 import { useForm, UseFormRegisterReturn } from 'react-hook-form'
 import { FiFile } from 'react-icons/fi'
+import { fetchPayrollAddress } from '@/utils/payrollVault'
+import { useSorobanReact } from '@soroban-react/core'
 
 type FileUploadProps = {
   register: UseFormRegisterReturn
@@ -40,7 +42,8 @@ type FormValues = {
   file_: FileList
 }
 
-const UploadComponent = ({setFileHash} : {setFileHash: any}) => {
+const UploadComponent = ({ setFileHash, setSignUrl, employee }: { setFileHash: any, setSignUrl: any, employee: string }) => {
+  const { address, activeChain } = useSorobanReact()
   const { register, handleSubmit, formState: { errors } } = useForm<FormValues>()
 
   // Function to calculate SHA-256 hash (you can replace this with MD5)
@@ -66,6 +69,9 @@ const UploadComponent = ({setFileHash} : {setFileHash: any}) => {
   }
 
   const onSubmit = handleSubmit(async (data) => {
+    if (!address || !activeChain) return
+    const payrollAddress = fetchPayrollAddress(activeChain?.id)
+
     const file = data.file_[0]; // Get the first file from the FileList
     if (file) {
       const hash = await calculateHash(file);
@@ -86,6 +92,7 @@ const UploadComponent = ({setFileHash} : {setFileHash: any}) => {
         if (response.ok) {
           console.log('FILE URI:', result.jsonContent);
           setFileHash(result.jsonContent.hash);
+          setSignUrl(`${result.jsonContent.sign_url}&employer=${address}&employee=${employee}&vaultAddress=${payrollAddress}`);
         } else {
           console.error('Error:', result.message);
         }
