@@ -1,11 +1,7 @@
 import { useSorobanReact } from '@soroban-react/core'
 import React, { useState } from 'react'
 import { ProfileDrawer } from '../Drawer/Drawer'
-import { Accordion, AccordionButton, AccordionItem, AccordionPanel, Avatar, Button, Card, CardBody, CardFooter, Grid, GridItem, Heading, IconButton, Input, InputGroup, InputLeftElement, InputRightElement, Stack, Text } from '@chakra-ui/react'
-import { AddIcon, Search2Icon } from '@chakra-ui/icons'
-import { BsThreeDotsVertical, BsTrash } from "react-icons/bs";
 import { SearchBar } from './SearchBar'
-import { shortenAddress } from '@/utils/shortenAdress'
 import { TradContractsAccordion } from '../Accordion/TradContractsAccorrdion'
 
 export const MainPage = () => {
@@ -18,6 +14,7 @@ export const MainPage = () => {
     <>
       <ProfileDrawer isOpen={isDrawerOpen} onClose={() => { setIsDrawerOpen(false) }} />
       <SearchBar handleOpenDrawer={setIsDrawerOpen} />
+
       <TradContractsAccordion />
     </>
   )

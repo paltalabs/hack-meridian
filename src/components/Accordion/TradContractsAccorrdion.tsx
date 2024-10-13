@@ -1,10 +1,7 @@
 import { useSorobanReact } from '@soroban-react/core'
-import React, { useState } from 'react'
-import { ProfileDrawer } from '../Drawer/Drawer'
-import { Accordion, AccordionButton, AccordionItem, AccordionPanel, Avatar, Button, Card, CardBody, CardFooter, Grid, GridItem, Heading, IconButton, Input, InputGroup, InputLeftElement, InputRightElement, Stack, Text } from '@chakra-ui/react'
-import { AddIcon, Search2Icon } from '@chakra-ui/icons'
+import React from 'react'
+import { Accordion, AccordionButton, AccordionItem, AccordionPanel, Avatar, Button, Card, CardBody, CardFooter, Grid, GridItem, Heading, IconButton, Stack, Text } from '@chakra-ui/react'
 import { BsThreeDotsVertical, BsTrash } from "react-icons/bs";
-import { SearchBar } from '../layout/SearchBar'
 import { shortenAddress } from '@/utils/shortenAdress'
 
 export const TradContractsAccordion = () => {
