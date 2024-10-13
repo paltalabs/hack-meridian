@@ -18,14 +18,39 @@ import { useSorobanReact } from '@soroban-react/core'
 import React, { useState } from 'react'
 import BusinessAccountModal from '../Modals/BusinessAccountModal'
 
+export enum BusinessAccountOptions {
+  DEPOSIT = 'deposit',
+  WITHDRAW = 'withdraw'
+}
+interface BusinessAccountModal {
+  isOpen: boolean;
+  method: BusinessAccountOptions | undefined;
+}
+
 export const ProfileDrawer = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void; }) => {
   const { address, disconnect } = useSorobanReact()
-  const [isAccountModalOpen, setIsAccountModalOpen] = useState<boolean>(false)
+  const [modalStatus, setModalStauts] = useState<BusinessAccountModal>({
+    isOpen: false,
+    method: undefined
+  })
 
+  const [isAccountModalOpen, setIsAccountModalOpen] = useState<boolean>(false)
+  const handleOpenModal = (method: BusinessAccountOptions) => {
+    setModalStauts({
+      isOpen: true,
+      method
+    })
+  }
+  const handleCloseModal = () => {
+    setModalStauts({
+      isOpen: false,
+      method: undefined
+    })
+  }
   if (!address) return null;
   return (
     <>
-      <BusinessAccountModal isOpen={isAccountModalOpen} onClose={() => { setIsAccountModalOpen(false) }} />
+      <BusinessAccountModal isOpen={modalStatus.isOpen} onClose={handleCloseModal} method={modalStatus.method} />
       <Drawer placement={'left'} onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay backdropFilter={'blur(10px)'} />
         <DrawerContent>
@@ -48,7 +73,7 @@ export const ProfileDrawer = ({ isOpen, onClose }: { isOpen: boolean, onClose: (
                 minW={'100%'}
                 justifyContent={'left'}
                 pl={4} py={8}
-                onClick={() => setIsAccountModalOpen(true)}
+                onClick={() => handleOpenModal(BusinessAccountOptions.DEPOSIT)}
               >
               Deposit to Business account
             </Button>
@@ -58,7 +83,7 @@ export const ProfileDrawer = ({ isOpen, onClose }: { isOpen: boolean, onClose: (
                 minW={'100%'}
                 justifyContent={'left'}
                 pl={4} py={8}
-                onClick={() => setIsAccountModalOpen(true)}
+                onClick={() => handleOpenModal(BusinessAccountOptions.WITHDRAW)}
               >
               Withdraw from Business account
             </Button>

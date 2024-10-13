@@ -11,29 +11,35 @@ import {
   Input,
   InputGroup,
   InputLeftElement,
+  NumberInput,
+  NumberInputField,
 } from '@chakra-ui/react'
+import { BusinessAccountOptions } from '../Drawer/Drawer';
 
-const BusinessAccountModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void }) => {
+const BusinessAccountModal = ({ isOpen, onClose, method }: { isOpen: boolean, onClose: () => void, method: BusinessAccountOptions | undefined; }) => {
+  if (!method) return null;
   return (
     <>
       <Modal isOpen={isOpen} onClose={onClose} isCentered size={'full'}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Deposit to account</ModalHeader>
+          <ModalHeader textAlign={'center'} pt={12}>{method === BusinessAccountOptions.DEPOSIT ? 'Deposit to' : 'Withdraw from'} account</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             <InputGroup>
               <InputLeftElement color={'grey.300'}>$</InputLeftElement>
-              <Input>
-              </Input>
+              <Input type='number' />
             </InputGroup>
           </ModalBody>
 
-          <ModalFooter>
-            <Button colorScheme='blue' mr={3} onClick={onClose}>
-              Close
+          <ModalFooter justifyContent={'center'} pb={12}>
+            <Button
+              variant='solid'
+              colorScheme='green'
+              rounded={18}
+            >
+              {method.charAt(0).toUpperCase() + method.slice(1)}
             </Button>
-            <Button variant='ghost'>Deposit</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
