@@ -1,13 +1,13 @@
 import { useSorobanReact } from '@soroban-react/core'
 import React, { useEffect, useState } from 'react'
 import { ProfileDrawer } from '../Drawer/Drawer'
-import { Avatar, Grid, GridItem, IconButton, Input, InputGroup, InputLeftElement, InputRightElement } from '@chakra-ui/react'
-import { AddIcon, Search2Icon } from '@chakra-ui/icons'
 import { SearchBar } from './SearchBar'
 import { useDispatch } from 'react-redux'
 import { PayrollVaultMethod, usePayrollVaultCallback } from '@/hooks/usePayroll'
 import { fetchPayrollAddress } from '@/utils/payrollVault'
 import { Address } from '@stellar/stellar-sdk'
+import { TradContractsAccordion } from '../Accordion/TradContractsAccorrdion'
+import { Stack, Text } from '@chakra-ui/react'
 
 export const MainPage = () => {
   const sorobanContext = useSorobanReact()
@@ -42,8 +42,13 @@ export const MainPage = () => {
   if (!address) return null;
   return (
     <>
-      <SearchBar handleOpenDrawer={setIsDrawerOpen} />
       <ProfileDrawer isOpen={isDrawerOpen} onClose={() => { setIsDrawerOpen(false) }} />
+      <SearchBar handleOpenDrawer={setIsDrawerOpen} />
+      <Stack>
+        <Text>Business account balance:</Text>
+        <Text as={'b'} fontSize={'3xl'}>$ 1000</Text>
+      </Stack>
+      <TradContractsAccordion />
     </>
   )
 }
