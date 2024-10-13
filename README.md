@@ -1,6 +1,8 @@
-# Welcome to Payroll Genius!
+# Welcome to Payroll Genius 🧠!
 
 This dapp largely inspired by the [ink!athon](https://github.com/scio-labs/inkathon) project will help you kickstart your soroban dapp creator journey.
+
+Flowchart.jpg
 
 ## Verify installation
 
