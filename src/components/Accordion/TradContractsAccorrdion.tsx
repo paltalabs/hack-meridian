@@ -43,7 +43,7 @@ export const TradContractsAccordion = () => {
                   <GridItem colSpan={10}>
                     <CardBody textAlign={'left'}>
                       <Heading size='md'>{employees[contract].employee.name}</Heading>
-                      <Text fontSize='sm' as={'sub'}>$ {employees[contract].salary / 10000000} - {employees[contract].payment_period}</Text>
+                      <Text fontSize='sm' as={'sub'}>$ {Number(employees[contract].salary) / 10000000} - Notice Period: {employees[contract].payment_period}</Text>
                     </CardBody>
                   </GridItem>
                   <GridItem colSpan={1} justifySelf={'end'}>
