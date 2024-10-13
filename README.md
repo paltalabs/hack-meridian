@@ -3,6 +3,8 @@
 
 Payroll Genius is a decentralized application (dapp) inspired by the [Link project](https://github.com/paltalabs/hack-meridian), designed to simplify the payroll process for businesses while leveraging DeFi solutions on the Stellar blockchain.
 
+![Diagrama de flujo (4)](https://github.com/user-attachments/assets/739dfccd-6639-43a9-9bce-5771e8402cc0)
+
 ## Verify installation
 
 To verify that everything is in order you can run
