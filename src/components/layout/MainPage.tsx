@@ -7,9 +7,10 @@ import { PayrollVaultMethod, usePayrollVaultCallback } from '@/hooks/usePayroll'
 import { fetchPayrollAddress } from '@/utils/payrollVault'
 import { Address, scValToNative, xdr } from '@stellar/stellar-sdk'
 import { TradContractsAccordion } from '../Accordion/TradContractsAccorrdion'
-import { Stack, Text } from '@chakra-ui/react'
+import { Button, Flex, Stack, Text } from '@chakra-ui/react'
 import { PaymentPeriod, addEmployee, setBalance, setName } from '@/store/features/employerStore'
 import { CreateContractModal } from '../Modals/CreateContractModal'
+import { PayButton } from '../buttons/PayButton'
 
 export const MainPage = () => {
   const sorobanContext = useSorobanReact()
@@ -111,6 +112,9 @@ export const MainPage = () => {
         <Text as={'b'} fontSize={'3xl'}>$ {companyBalance / 10000000}</Text>
       </Stack>
       <TradContractsAccordion />
+      <Flex justifyContent="flex-end" width="100%" mt={4}>
+        <PayButton />
+      </Flex>
     </>
   )
 }

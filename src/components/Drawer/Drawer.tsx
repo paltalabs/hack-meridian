@@ -21,11 +21,13 @@ import BusinessAccountModal from '../Modals/BusinessAccountModal'
 export const ProfileDrawer = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void; }) => {
   const { address, disconnect } = useSorobanReact()
   const [isAccountModalOpen, setIsAccountModalOpen] = useState<boolean>(false)
+  const [isDeposit, setIsDeposit] = useState(true);
+
 
   if (!address) return null;
   return (
     <>
-      <BusinessAccountModal isOpen={isAccountModalOpen} onClose={() => { setIsAccountModalOpen(false) }} />
+      <BusinessAccountModal isOpen={isAccountModalOpen} onClose={() => { setIsAccountModalOpen(false) }} isDeposit={isDeposit} />
       <Drawer placement={'left'} onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay backdropFilter={'blur(10px)'} />
         <DrawerContent>
@@ -48,20 +50,26 @@ export const ProfileDrawer = ({ isOpen, onClose }: { isOpen: boolean, onClose: (
                 minW={'100%'}
                 justifyContent={'left'}
                 pl={4} py={8}
-                onClick={() => setIsAccountModalOpen(true)}
+                onClick={() => {
+                  setIsAccountModalOpen(true)
+                  setIsDeposit(true)
+                }}
               >
-              Deposit to Business account
-            </Button>
+                Deposit to Business account
+              </Button>
               <Button
                 leftIcon={<MinusIcon />}
                 variant={'outline'}
                 minW={'100%'}
                 justifyContent={'left'}
                 pl={4} py={8}
-                onClick={() => setIsAccountModalOpen(true)}
+                onClick={() => {
+                  setIsAccountModalOpen(true)
+                  setIsDeposit(false)
+                }}
               >
-              Withdraw from Business account
-            </Button>
+                Withdraw from Business account
+              </Button>
             </Stack>
           </DrawerBody>
           <DrawerFooter justifyContent={'center'}>

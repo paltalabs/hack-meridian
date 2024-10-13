@@ -32,7 +32,6 @@
     "@soroban-react/core": "9.1.13",
     "@soroban-react/events": "9.1.13",
     "@soroban-react/freighter": "9.1.13",
-    "@soroban-react/hana": "9.1.13",
     "@soroban-react/lobstr": "9.1.13",
     "@soroban-react/types": "9.1.13",
     "@soroban-react/utils": "9.1.13",
