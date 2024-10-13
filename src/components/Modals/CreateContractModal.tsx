@@ -140,6 +140,7 @@ export const CreateContractModal = ({ isOpen, onClose }: { isOpen: boolean, onCl
               variant='solid'
               colorScheme='green'
               leftIcon={<AddIcon />}
+              rounded={18}
               onClick={handleSubmit} // Call the handleSubmit function
             >
               Add employee
