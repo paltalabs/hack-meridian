@@ -6,7 +6,7 @@ use soroban_sdk::{
 };
 
 use crate::test::PaymentVaultTest;
-use crate::test::payroll_vault::ContractError;
+// use crate::test::payroll_vault::ContractError;
 
 #[test]
 fn test_deposit_employer_is_caller() {
