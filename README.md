@@ -102,6 +102,12 @@ Payroll payments are processed through:
 
 The lending process is entirely powered by Soroban smart contracts, allowing employees to access loans backed by their future salary payments. Lenders can globally access this market, earning yield on their investments.
 
+### Roadmap
+- [ ] Traditional PDF Contract to Smart Contract between 2 peers using AI
+- [ ] Implement Loans based on future payments
+- [ ] Update employee conditions
+- [ ] Fee System / Subscription tiers for employers
+
 # Screenshots
 
 ![login](./assets/login.png)
