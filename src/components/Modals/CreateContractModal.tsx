@@ -9,7 +9,8 @@ import { FiFile } from 'react-icons/fi'
 import UploadComponent from '../upload'
 
 export const CreateContractModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: (value: boolean) => void }) => {
-  const { address, activeChain } = useSorobanReact()
+  const sorobanContext = useSorobanReact()
+  const { address, activeChain } = sorobanContext
 
   const [fullName, setFullName] = useState('')
   const [stellarAddress, setStellarAddress] = useState('')
@@ -47,6 +48,9 @@ export const CreateContractModal = ({ isOpen, onClose }: { isOpen: boolean, onCl
         case "YEARLY":
           paymentPeriodTemp = PaymentPeriod.ANNUALY
           break;
+        case "SECONDLY":
+          paymentPeriodTemp = PaymentPeriod.SECONDLY
+          break;
 
         default:
           break;
@@ -71,6 +75,7 @@ export const CreateContractModal = ({ isOpen, onClose }: { isOpen: boolean, onCl
         employParams,
         true,
       );
+      sorobanContext.connect()
 
       onClose(false)
     } catch (e: any) {
@@ -118,6 +123,7 @@ export const CreateContractModal = ({ isOpen, onClose }: { isOpen: boolean, onCl
                 <option value='WEEKLY'>Weekly</option>
                 <option value='MONTHLY'>Monthly</option>
                 <option value='YEARLY'>Yearly</option>
+                <option value='SECONDLY'>Every Second</option>
               </Select> 
               <Text>{"Number of notice periods:"}</Text>
               

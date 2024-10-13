@@ -44,4 +44,5 @@ pub enum PaymentPeriod {
     Weekly = 0,
     Monthly = 1,
     Annually = 2,
+    EverySecond = 3,
 }

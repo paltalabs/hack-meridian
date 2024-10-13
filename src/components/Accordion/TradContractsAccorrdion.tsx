@@ -47,7 +47,12 @@ export const TradContractsAccordion = () => {
                   <GridItem colSpan={10}>
                     <CardBody textAlign={'left'}>
                       <Heading size='md'>{employees[contract].employee.name}</Heading>
-                      <Text fontSize='sm' as={'sub'}>$ {Number(employees[contract].salary) / 10000000} - Payment Period: {employees[contract].payment_period === PaymentPeriod.Weekly ? "Weekly" : employees[contract].payment_period === PaymentPeriod.Monthly ? "Monthly" : "Yearly"}</Text>
+                      <Text fontSize='sm' as={'sub'}>$ {Number(employees[contract].salary) / 10000000} - 
+                        Payment Period: {
+                        employees[contract].payment_period === PaymentPeriod.Weekly ? "Weekly" : 
+                        employees[contract].payment_period === PaymentPeriod.Monthly ? "Monthly" : 
+                        employees[contract].payment_period === PaymentPeriod.Annually ? "Yearly" :
+                        "Every Second"}</Text>
                     
                       <Text fontSize='sm' as={'sub'}>
                          -   Status: 

@@ -24,6 +24,7 @@ export enum PaymentPeriod {
     Weekly = 'Weekly',
     Monthly = 'Monthly',
     Annually = 'Annually',
+    EverySecond = 'EverySecond',
 }
 
 export interface EmployerState {

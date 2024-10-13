@@ -21,6 +21,7 @@ export enum PaymentPeriod {
     WEEKLY = 0,
     MONTHLY = 1,
     ANNUALY = 2,
+    SECONDLY = 3
 }
 
 const isObject = (val: unknown) => typeof val === 'object' && val !== null && !Array.isArray(val);

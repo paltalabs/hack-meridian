@@ -9,6 +9,8 @@ pub fn calculate_periods_since(
         PaymentPeriod::Weekly => 7 * 24 * 60 * 60,
         PaymentPeriod::Monthly => 30 * 24 * 60 * 60,
         PaymentPeriod::Annually => 365 * 24 * 60 * 60,
+        // EverySecond
+        PaymentPeriod::EverySecond => 1,
     };
 
     let elapsed_seconds = current_timestamp - start_timestamp;
@@ -23,6 +25,7 @@ pub fn calculate_periods_amounts_in_seconds(
         PaymentPeriod::Weekly => 7 * 24 * 60 * 60,
         PaymentPeriod::Monthly => 30 * 24 * 60 * 60,
         PaymentPeriod::Annually => 365 * 24 * 60 * 60,
+        PaymentPeriod::EverySecond => 1,
     };
 
     periods * period_seconds
