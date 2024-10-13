@@ -52,7 +52,7 @@ export const Example = () => {
         // const paymentPeriod = nativeToScVal(PaymentPeriod.WEEKLY, { type: "int" }) 
         const paymentPeriod = nativeToScVal(PaymentPeriod.MONTHLY, { type: "u32" })
         const salary = nativeToScVal(1000_0000000, { type: "i128" })
-        const noticePeriod = nativeToScVal(2, { type: "u64" })
+        const noticePeriod = nativeToScVal(1, { type: "u64" })
 
         const employParams = [
             employer.toScVal(),
@@ -82,7 +82,7 @@ export const Example = () => {
         if (!address) return;
         const caller = new Address(address);
         const employer = new Address(address);
-        const amount = nativeToScVal(100_0000000, { type: 'i128' })
+        const amount = nativeToScVal(100000_0000000, { type: 'i128' })
 
         const depositParams = [
             caller.toScVal(),
