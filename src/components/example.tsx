@@ -33,8 +33,6 @@ export const Example = () => {
     const [showResult, setShowResult] = useState("")
     const [payrollAddress, setPayrollAddress] = useState("")
 
-    const dispatch = useDispatch(); // Redux dispatch
-
     useEffect(() => {
         console.log('🚀 ~ useEffect ~ activeChain:', activeChain);
         if (!activeChain?.id) return;

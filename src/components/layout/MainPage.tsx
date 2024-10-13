@@ -5,9 +5,10 @@ import { SearchBar } from './SearchBar'
 import { useDispatch } from 'react-redux'
 import { PayrollVaultMethod, usePayrollVaultCallback } from '@/hooks/usePayroll'
 import { fetchPayrollAddress } from '@/utils/payrollVault'
-import { Address } from '@stellar/stellar-sdk'
+import { Address, scValToNative } from '@stellar/stellar-sdk'
 import { TradContractsAccordion } from '../Accordion/TradContractsAccorrdion'
 import { Stack, Text } from '@chakra-ui/react'
+import { setBalance } from '@/store/features/employerStore'
 
 export const MainPage = () => {
   const sorobanContext = useSorobanReact()
@@ -33,8 +34,8 @@ export const MainPage = () => {
     ).then((result) => {
       console.log('🚀 ~ ).then ~ result:', result);
       //@ts-ignore
-      // dispatch(setBalance(scValToNative(result)))
-      // dispatch(setBalance(0))
+      dispatch(setBalance(Number(scValToNative(result))))
+
     })
 
   }, [address, activeChain])
