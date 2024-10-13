@@ -76,9 +76,7 @@ export const MainPage = () => {
         <Text as={'b'} fontSize={'3xl'}>$ {companyBalance / 10000000}</Text>
       </Stack>
       <TradContractsAccordion />
-      <Flex justifyContent="flex-end" width="100%" mt={4}>
-        <PayButton />
-      </Flex>
+      
     </>
   )
 }

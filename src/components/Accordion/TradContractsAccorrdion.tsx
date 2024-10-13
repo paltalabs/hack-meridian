@@ -6,6 +6,9 @@ import { shortenAddress } from '@/utils/shortenAdress'
 import { useSelector } from 'react-redux';
 import { PaymentPeriod, selectEmployerEmployees } from '@/store/features/employerStore';
 import { FireButton } from '../buttons/FireButton';
+import { Flex}  from '@chakra-ui/react'
+import { PayButton } from '../buttons/PayButton'
+
 
 export const TradContractsAccordion = () => {
   const { address } = useSorobanReact()
@@ -67,7 +70,11 @@ export const TradContractsAccordion = () => {
           </Card>
         ))}
       </Accordion>
-
+      {Object.keys(employees).length > 0 && (
+        <Flex justifyContent="flex-end" width="100%" mt={4}>
+          <PayButton />
+        </Flex>
+      )}
     </>
   )
 }
