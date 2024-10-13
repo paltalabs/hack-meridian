@@ -14,7 +14,7 @@ export const TradContractsAccordion = () => {
   if (!address) return null;
   return (
     <>
-      <Accordion allowMultiple allowToggle>
+      <Accordion allowToggle>
         {Object.keys(employees).map((contract, index) => (
           <Card
             overflow='hidden'
