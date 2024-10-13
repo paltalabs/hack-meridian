@@ -28,6 +28,7 @@ export const CreateContractModal = ({ isOpen, onClose }: { isOpen: boolean, onCl
     try {
       const employee = new Address(stellarAddress)
       const name = nativeToScVal(fullName, { type: "string" })
+      const hash = nativeToScVal("hash", { type: "string" })
       let paymentPeriodTemp;
       switch (paymentPeriod) {
         case "WEEKLY":
@@ -53,14 +54,15 @@ export const CreateContractModal = ({ isOpen, onClose }: { isOpen: boolean, onCl
         name,
         paymentPeriodScVal,
         salaryScVal,
-        noticePeriodScVal
+        noticePeriodScVal,
+        hash
       ]
 
       result = await invokePayrollVault(
         payrollAddress,
         PayrollVaultMethod.EMPLOY,
         employParams,
-        true
+        true,
       );
 
       onClose(false)

@@ -30,7 +30,7 @@ export const PayButton = () => {
 
   return (
     <Button colorScheme="pink" size="md" width={28} ml="auto" onClick={handlePay}>
-      Pay
+      Pay All
     </Button>
   )
 }

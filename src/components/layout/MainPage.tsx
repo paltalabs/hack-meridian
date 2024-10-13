@@ -26,6 +26,11 @@ export const MainPage = () => {
       console.log("Not connected")
       return;
     }
+    // if not testnet, return
+    if (activeChain.id !== "testnet") {
+      console.log("Not testnet")
+      return;
+    }
     const vaultAddress = fetchPayrollAddress(activeChain.id)
     const employer = new Address(address)
 
