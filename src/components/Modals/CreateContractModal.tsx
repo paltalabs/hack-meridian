@@ -35,6 +35,7 @@ export const CreateContractModal = ({ isOpen, onClose }: { isOpen: boolean, onCl
     try {
       const employee = new Address(stellarAddress)
       const name = nativeToScVal(fullName, { type: "string" })
+      const hash = nativeToScVal("hash", { type: "string" })
       let paymentPeriodTemp;
       switch (paymentPeriod) {
         case "WEEKLY":
@@ -68,7 +69,7 @@ export const CreateContractModal = ({ isOpen, onClose }: { isOpen: boolean, onCl
         payrollAddress,
         PayrollVaultMethod.EMPLOY,
         employParams,
-        true
+        true,
       );
 
       onClose(false)
@@ -109,7 +110,7 @@ export const CreateContractModal = ({ isOpen, onClose }: { isOpen: boolean, onCl
                 variant={'outline'}
               />
               <Select
-                placeholder='Select payment period'
+                placeholder='Select payment frequency'
                 value={paymentPeriod}
                 onChange={(e) => setPaymentPeriod(e.target.value)}
                 variant={'outline'}
@@ -117,13 +118,17 @@ export const CreateContractModal = ({ isOpen, onClose }: { isOpen: boolean, onCl
                 <option value='WEEKLY'>Weekly</option>
                 <option value='MONTHLY'>Monthly</option>
                 <option value='YEARLY'>Yearly</option>
-              </Select>
+              </Select> 
+              <Text>{"Number of notice periods:"}</Text>
+              
               <NumberInput
                 min={0}
                 value={noticePeriod}
-                onChange={(valueString) => setNoticePeriod(parseFloat(valueString))}
+                onChange={(valueString) => setNoticePeriod(!valueString ? 0 : parseFloat(valueString))}
               >
                 <NumberInputField />
+                <Text>{"Salary per period:"}</Text>
+
                 <NumberInputStepper>
                   <NumberIncrementStepper />
                   <NumberDecrementStepper />
@@ -136,7 +141,7 @@ export const CreateContractModal = ({ isOpen, onClose }: { isOpen: boolean, onCl
                 <Input
                   placeholder='Salary'
                   value={salary}
-                  onChange={(e) => setSalary(parseFloat(e.target.value))}
+                  onChange={(e) => setSalary(!e.target.value ? 0 : parseFloat(e.target.value))}
                   variant={'outline'}
                 />
               </InputGroup>

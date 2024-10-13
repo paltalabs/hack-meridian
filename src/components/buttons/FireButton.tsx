@@ -7,7 +7,8 @@ import { Address, scValToNative, xdr } from '@stellar/stellar-sdk';
 import { BsTrash } from 'react-icons/bs';
 
 export const FireButton = ({employee} : {employee: string}) => {
-  const { address, activeChain } = useSorobanReact()
+  const sorobanContext = useSorobanReact()
+  const { address, activeChain, connect } = sorobanContext
   const invokePayrollVault = usePayrollVaultCallback();
 
   const handleFire = () => { 
@@ -25,6 +26,7 @@ export const FireButton = ({employee} : {employee: string}) => {
     ).then((result) => {
       //@ts-ignore
       console.log('🚀 « result:', scValToNative(result.returnValue as xdr.ScVal));
+      sorobanContext.connect()
     })
   }
 

@@ -26,6 +26,11 @@ export const MainPage = () => {
       console.log("Not connected")
       return;
     }
+    // if not testnet, return
+    if (activeChain.id !== "testnet") {
+      console.log("Not testnet")
+      return;
+    }
     const vaultAddress = fetchPayrollAddress(activeChain.id)
     const employer = new Address(address)
 
@@ -76,9 +81,7 @@ export const MainPage = () => {
         <Text as={'b'} fontSize={'3xl'}>$ {companyBalance / 10000000}</Text>
       </Stack>
       <TradContractsAccordion />
-      <Flex justifyContent="flex-end" width="100%" mt={4}>
-        <PayButton />
-      </Flex>
+      
     </>
   )
 }
