@@ -8,10 +8,10 @@ export interface WorkContract {
     payment_period: PaymentPeriod;
     salary: number;
     notice_period: number;
-    employed_at: number;
+    employment_start_date: number;
     is_active: boolean;
     unemployed_at?: number | null;
-    notice_period_payments_made: number;
+    notice_period_payments_made?: number;
 }
 
 export interface Employee {

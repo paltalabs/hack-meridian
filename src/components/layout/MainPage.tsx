@@ -8,7 +8,7 @@ import { fetchPayrollAddress } from '@/utils/payrollVault'
 import { Address, scValToNative } from '@stellar/stellar-sdk'
 import { TradContractsAccordion } from '../Accordion/TradContractsAccorrdion'
 import { Stack, Text } from '@chakra-ui/react'
-import { setBalance, setName } from '@/store/features/employerStore'
+import { PaymentPeriod, addEmployee, setBalance, setName } from '@/store/features/employerStore'
 import { CreateContractModal } from '../Modals/CreateContractModal'
 
 export const MainPage = () => {
@@ -42,9 +42,56 @@ export const MainPage = () => {
         [employer.toScVal()],
         false
       ).then((result) => {
-        console.log("result", scValToNative(result))
+        console.log("result", result)
+        //@ts-ignore
+        console.log("native result", scValToNative(result))
+        //@ts-ignore
         const nativeResult = scValToNative(result)
+        console.log("employees", nativeResult.employees)
         dispatch(setName(nativeResult.name))
+
+        const employees = {
+          "GDRPBET7UV3NDFIW34MMG6XOI2BS44BXGI76KOQ3XCZXGLOPNNTXECB3": {
+            employee: {
+              address: "GDRPBET7UV3NDFIW34MMG6XOI2BS44BXGI76KOQ3XCZXGLOPNNTXECB3",
+              name: "Pedro Urdemales"
+            },
+            payment_period: PaymentPeriod.Weekly,
+            salary: 1000_0000000,
+            notice_period: 1,
+            employment_start_date: 0,
+            last_payment_date: 0,
+            is_active: true,
+          },
+          "GCNM6ABSY5VPPPU4BTUDSBNPMGTYWOI6UK3MZFN3EJUFYYUJRU5QXVYD": {
+            employee: {
+              address: "GCNM6ABSY5VPPPU4BTUDSBNPMGTYWOI6UK3MZFN3EJUFYYUJRU5QXVYD",
+              name: "Aureliano Buendia"
+            },
+            payment_period: PaymentPeriod.Weekly,
+            salary: 1200_0000000,
+            notice_period: 1,
+            employment_start_date: 0,
+            last_payment_date: 0,
+            is_active: true,
+          },
+          "GAXG7JCGN4V73PYTGCW2JLIRJLMD7I42BZKRPBZCFLA2D6BHRVRCXHOG": {
+            employee: {
+              address: "GAXG7JCGN4V73PYTGCW2JLIRJLMD7I42BZKRPBZCFLA2D6BHRVRCXHOG",
+              name: "Irene Beltran"
+            },
+            payment_period: PaymentPeriod.Weekly,
+            salary: 1150_0000000,
+            notice_period: 1,
+            employment_start_date: 0,
+            last_payment_date: 0,
+            is_active: true,
+          },
+        }
+        Object.entries(employees).forEach(([address, workContract]) => {
+          //@ts-ignore
+          dispatch(addEmployee({ address, workContract }));
+        });
         //@ts-ignore
         // dispatch(setBalance(Number(scValToNative(result))))
       })

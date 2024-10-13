@@ -167,7 +167,7 @@ export const Example = () => {
                                 <p><strong>Salary:</strong> {employee.salary}</p>
                                 <p><strong>Payment Period:</strong> {employee.payment_period}</p>
                                 <p><strong>Notice Period:</strong> {employee.notice_period}</p>
-                                <p><strong>Employed At:</strong> {employee.employed_at}</p>
+                                <p><strong>Employed At:</strong> {employee.employment_start_date}</p>
                                 <p><strong>Is Active:</strong> {employee.is_active ? 'Yes' : 'No'}</p>
                                 {employee.unemployed_at && (
                                     <p><strong>Unemployed At:</strong> {employee.unemployed_at}</p>
