@@ -9,9 +9,7 @@ import { FireButton } from '../buttons/FireButton';
 
 export const TradContractsAccordion = () => {
   const { address } = useSorobanReact()
-  const contracts = ['GC2VCACI4VCD3RQF3JNQNYYCGXAMZRQ3LKF3Q5425W7RIY6PR2UUNNEB', 'GC2VCACI4VCD3RQF3JNQNYYCGXAMZRQ3LKF3Q5425W7RIY6PR2UUNNEB', 'GC2VCACI4VCD3RQF3JNQNYYCGXAMZRQ3LKF3Q5425W7RIY6PR2UUNNEB']
   const employees = useSelector(selectEmployerEmployees);
-
 
   if (!address) return null;
   return (

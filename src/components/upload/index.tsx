@@ -1,5 +1,5 @@
 import { ReactNode, useRef } from 'react'
-import { Button, FormControl, FormErrorMessage, FormLabel, Icon, InputGroup } from '@chakra-ui/react'
+import { Button, Flex, FormControl, FormErrorMessage, FormLabel, Icon, InputGroup } from '@chakra-ui/react'
 import { useForm, UseFormRegisterReturn } from 'react-hook-form'
 import { FiFile } from 'react-icons/fi'
 
@@ -40,7 +40,7 @@ type FormValues = {
   file_: FileList
 }
 
-const UploadComponent = () => {
+const UploadComponent = ({setFileHash} : {setFileHash: any}) => {
   const { register, handleSubmit, formState: { errors } } = useForm<FormValues>()
 
   // Function to calculate SHA-256 hash (you can replace this with MD5)
@@ -85,6 +85,7 @@ const UploadComponent = () => {
         const result = await response.json();
         if (response.ok) {
           console.log('FILE URI:', result.jsonContent);
+          setFileHash(result.jsonContent.hash);
         } else {
           console.error('Error:', result.message);
         }
@@ -114,24 +115,24 @@ const UploadComponent = () => {
   return (
     <>
       <form onSubmit={onSubmit}>
-        <FormControl isInvalid={!!errors.file_} isRequired>
-          <FormLabel>{'File input'}</FormLabel>
+        <Flex> 
+          <FormControl isInvalid={!!errors.file_} isRequired>
+              <FileUpload
+                accept={'image/*,application/pdf'}
+                register={register('file_', { validate: validateFiles })}
+                >
+                <Button leftIcon={<Icon as={FiFile} />}>
+                  Select File
+                </Button>
+              </FileUpload>
 
-            <FileUpload
-            accept={'image/*,application/pdf'}
-            register={register('file_', { validate: validateFiles })}
-            >
-            <Button leftIcon={<Icon as={FiFile} />}>
-              Upload
-            </Button>
-            </FileUpload>
+            <FormErrorMessage>
+              {errors.file_ && errors?.file_.message}
+            </FormErrorMessage>
+          </FormControl>
 
-          <FormErrorMessage>
-            {errors.file_ && errors?.file_.message}
-          </FormErrorMessage>
-        </FormControl>
-
-        <button type="submit">Submit</button>
+          <Button ml={5} type="submit">Upload</Button>
+        </Flex>
       </form>
     </>
   )

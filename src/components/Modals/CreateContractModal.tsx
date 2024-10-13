@@ -1,10 +1,12 @@
 import { useSorobanReact } from '@soroban-react/core'
 import React, { useState } from 'react'
-import { Avatar, Button, Input, InputGroup, InputLeftElement, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Select, Stack, Text } from '@chakra-ui/react'
+import { Avatar, Button, Icon, Input, InputGroup, InputLeftElement, Modal, ModalBody, ModalCloseButton, ModalContent, ModalFooter, ModalHeader, ModalOverlay, NumberDecrementStepper, NumberIncrementStepper, NumberInput, NumberInputField, NumberInputStepper, Select, Stack, Text } from '@chakra-ui/react'
 import { AddIcon } from '@chakra-ui/icons'
 import { Address, nativeToScVal } from "@stellar/stellar-sdk"
 import { PaymentPeriod, PayrollVaultMethod, usePayrollVaultCallback } from '@/hooks/usePayroll'
 import { fetchPayrollAddress } from '@/utils/payrollVault'
+import { FiFile } from 'react-icons/fi'
+import UploadComponent from '../upload'
 
 export const CreateContractModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: (value: boolean) => void }) => {
   const { address, activeChain } = useSorobanReact()
@@ -14,6 +16,9 @@ export const CreateContractModal = ({ isOpen, onClose }: { isOpen: boolean, onCl
   const [paymentPeriod, setPaymentPeriod] = useState('')
   const [salary, setSalary] = useState(0)
   const [noticePeriod, setNoticePeriod] = useState(0)
+
+  const [fileHash, setFileHash] = useState('');
+
 
   const invokePayrollVault = usePayrollVaultCallback()
 
@@ -132,6 +137,19 @@ export const CreateContractModal = ({ isOpen, onClose }: { isOpen: boolean, onCl
                   variant={'outline'}
                 />
               </InputGroup>
+              <InputGroup>
+                <UploadComponent setFileHash={setFileHash} />
+              </InputGroup>
+              <InputGroup>
+                <Input
+                  placeholder='File hash'
+                  value={fileHash}
+                  onChange={(e) => setFileHash(e.target.value)}
+                  variant={'outline'}
+                  disabled
+                />
+              </InputGroup>
+                
             </Stack>
           </ModalBody>
 
@@ -141,6 +159,7 @@ export const CreateContractModal = ({ isOpen, onClose }: { isOpen: boolean, onCl
               colorScheme='green'
               leftIcon={<AddIcon />}
               onClick={handleSubmit} // Call the handleSubmit function
+              disabled={!fullName || !stellarAddress || !paymentPeriod || !salary || !activeChain || !fileHash}
             >
               Add employee
             </Button>
