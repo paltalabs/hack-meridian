@@ -14,7 +14,7 @@ function copyFile(source: string, destination: string) {
 // Main function to handle the copying process
 function main(network: string) {
     const sorobanDir = path.join('/workspace/contracts/.soroban');
-    const publicDir = path.join('/workspace/public');
+    const publicDir = path.join('/workspace/src/constants');
 
     // Ensure the public directory exists
     if (!existsSync(publicDir)) {

@@ -10,14 +10,14 @@ import {
     scValToNative,
     xdr,
 } from "@stellar/stellar-sdk";
+import { fetchPayrollAddress } from '@/utils/payrollVault';
 
 export const useEmployer = (network: string) => {
-    const { address } = useSorobanReact(); // Get the user's wallet address from SorobanReact
+    const { address, activeChain } = useSorobanReact(); // Get the user's wallet address from SorobanReact
     const { invokePayrollVault } = usePayrollVault(network); // Payroll vault hook
     const dispatch = useDispatch(); // Redux dispatch
     const [error, setError] = useState<string | null>(null);
 
-    const vaultAddress = "CCM5YQVMKWVLQ4QQ54KWN27LJOBQBA6XU2LGENWDEFZF4JTO5L2VCA6Z" // TODO_ADDRESS
     useEffect(() => {
         const fetchEmployerDetails = async () => {
             try {
@@ -25,7 +25,11 @@ export const useEmployer = (network: string) => {
                 if (!address) {
                     throw new Error('No employer address available');
                 }
+                if (!activeChain) {
+                    throw new Error('No active Chain when fetching employer details')
+                }
 
+                const vaultAddress = fetchPayrollAddress(activeChain?.id)
                 // Call the contract to get the employer details
                 const employerData: any = await invokePayrollVault(vaultAddress, PayrollVaultMethod.GET_EMPLOYER, [
                     (new Address(address)).toScVal(), // Convert the address to ScVal type
