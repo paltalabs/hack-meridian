@@ -13,7 +13,8 @@ export enum PayrollVaultMethod {
     FIRE = "fire",
     EMPLOYER_BALANCE = "employer_balance",
     GET_EMPLOYER = "get_employer",
-    ASSET = "asset"
+    ASSET = "asset",
+    ACCEPT_WORK = "accept_work"
 }
 
 export enum PaymentPeriod {

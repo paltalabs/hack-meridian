@@ -1,7 +1,9 @@
 import { ReactNode, useRef } from 'react'
-import { Button, FormControl, FormErrorMessage, FormLabel, Icon, InputGroup } from '@chakra-ui/react'
+import { Button, Flex, FormControl, FormErrorMessage, FormLabel, Icon, InputGroup } from '@chakra-ui/react'
 import { useForm, UseFormRegisterReturn } from 'react-hook-form'
 import { FiFile } from 'react-icons/fi'
+import { fetchPayrollAddress } from '@/utils/payrollVault'
+import { useSorobanReact } from '@soroban-react/core'
 
 type FileUploadProps = {
   register: UseFormRegisterReturn
@@ -40,7 +42,8 @@ type FormValues = {
   file_: FileList
 }
 
-const UploadComponent = () => {
+const UploadComponent = ({ setFileHash, setSignUrl, employee }: { setFileHash: any, setSignUrl: any, employee: string }) => {
+  const { address, activeChain } = useSorobanReact()
   const { register, handleSubmit, formState: { errors } } = useForm<FormValues>()
 
   // Function to calculate SHA-256 hash (you can replace this with MD5)
@@ -66,6 +69,9 @@ const UploadComponent = () => {
   }
 
   const onSubmit = handleSubmit(async (data) => {
+    if (!address || !activeChain) return
+    const payrollAddress = fetchPayrollAddress(activeChain?.id)
+
     const file = data.file_[0]; // Get the first file from the FileList
     if (file) {
       const hash = await calculateHash(file);
@@ -85,6 +91,8 @@ const UploadComponent = () => {
         const result = await response.json();
         if (response.ok) {
           console.log('FILE URI:', result.jsonContent);
+          setFileHash(result.jsonContent.hash);
+          setSignUrl(`${result.jsonContent.sign_url}&employer=${address}&employee=${employee}&vaultAddress=${payrollAddress}`);
         } else {
           console.error('Error:', result.message);
         }
@@ -114,24 +122,24 @@ const UploadComponent = () => {
   return (
     <>
       <form onSubmit={onSubmit}>
-        <FormControl isInvalid={!!errors.file_} isRequired>
-          <FormLabel>{'File input'}</FormLabel>
+        <Flex> 
+          <FormControl isInvalid={!!errors.file_} isRequired>
+              <FileUpload
+                accept={'image/*,application/pdf'}
+                register={register('file_', { validate: validateFiles })}
+                >
+                <Button leftIcon={<Icon as={FiFile} />}>
+                  Select File
+                </Button>
+              </FileUpload>
 
-            <FileUpload
-            accept={'image/*,application/pdf'}
-            register={register('file_', { validate: validateFiles })}
-            >
-            <Button leftIcon={<Icon as={FiFile} />}>
-              Upload
-            </Button>
-            </FileUpload>
+            <FormErrorMessage>
+              {errors.file_ && errors?.file_.message}
+            </FormErrorMessage>
+          </FormControl>
 
-          <FormErrorMessage>
-            {errors.file_ && errors?.file_.message}
-          </FormErrorMessage>
-        </FormControl>
-
-        <button type="submit">Submit</button>
+          <Button ml={5} type="submit">Upload</Button>
+        </Flex>
       </form>
     </>
   )

@@ -28,7 +28,8 @@ export const SearchBar = ({ handleOpenDrawer, handleCreateContract }: { handleOp
               rounded={32}
               size={'sm'}
               aria-label="search-Vault"
-              colorScheme="green"
+              bg="#EFB8C8"
+              color="white"
               variant={'solid'}
               icon={<AddIcon />} />
           </InputRightElement>

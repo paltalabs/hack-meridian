@@ -1,13 +1,20 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { Button, Box, Spinner, Text } from '@chakra-ui/react';
+import { PayrollVaultMethod, usePayrollVaultCallback } from '@/hooks/usePayroll';
+import { Address, nativeToScVal, scValToNative } from '@stellar/stellar-sdk';
+import ConnectButton from '@/components/web3/ConnectButton';
+import { useSorobanReact } from '@soroban-react/core';
 
 const SignPage = () => {
+  const {address} = useSorobanReact()
   const router = useRouter();
-  const { hash, fileIpfsHash } = router.query;
+  const { hash, fileIpfsHash, employer, employee, vaultAddress } = router.query;
   const [fileUrl, setFileUrl] = useState<string | null>(null);
   const [fileType, setFileType] = useState<string | null>(null);
   const [hashMatch, setHashMatch] = useState<boolean | null>(null);
+    
+  const invokePayrollVault = usePayrollVaultCallback()
 
   useEffect(() => {
     const fetchFileData = async () => {
@@ -50,8 +57,17 @@ const SignPage = () => {
   }, [fileIpfsHash, hash]);
 
   const handleSign = () => {
-    // Implement your signing logic here
-    console.log('Signing hash:', hash);
+    if (!vaultAddress) return;
+    
+    invokePayrollVault(
+      vaultAddress as string,
+      PayrollVaultMethod.ACCEPT_WORK,
+      [new Address(employer as string).toScVal(), new Address(employee as string).toScVal(), nativeToScVal(true)],
+      true
+    ).then((result) => {
+      //@ts-ignore
+      console.log('🚀 « result:', scValToNative(result.returnValue as xdr.ScVal));
+    })
   };
 
   const handleDownload = () => {
@@ -114,14 +130,14 @@ const SignPage = () => {
           <Text>Unable to display file. Unsupported format.</Text>
         )}
       </Box>
-      <Button
+      {!address ? <ConnectButton /> : <Button
         colorScheme="blue"
         onClick={handleSign}
         mr={2}
         isDisabled={hashMatch === false}
       >
         Sign
-      </Button>
+      </Button>}
       <Button colorScheme="teal" onClick={handleDownload}>
         Download
       </Button>

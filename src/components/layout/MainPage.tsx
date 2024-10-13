@@ -55,7 +55,7 @@ export const MainPage = () => {
         dispatch(setName(nativeResult.name))
 
         const employees = nativeResult.employees
-        
+
         Object.entries(employees).forEach(([address, workContract]) => {
           //@ts-ignore
           dispatch(addEmployee({ address, workContract }));
@@ -77,7 +77,7 @@ export const MainPage = () => {
       <SearchBar handleOpenDrawer={setIsDrawerOpen} handleCreateContract={setIsCreateContractModalOpen} />
       <CreateContractModal isOpen={isCreateContractModalOpen} onClose={setIsCreateContractModalOpen} />
       <Stack>
-        <Text>Business account balance:</Text>
+        <Text>Business balance:</Text>
         <Text as={'b'} fontSize={'3xl'}>$ {companyBalance / 10000000}</Text>
       </Stack>
       <TradContractsAccordion />
