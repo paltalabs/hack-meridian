@@ -74,7 +74,7 @@ const BusinessAccountModal = ({ isOpen, onClose, isDeposit }: { isOpen: boolean,
               <Input
                 placeholder='Salary'
                 value={amount}
-                onChange={(e) => setAmount(parseFloat(e.target.value))}
+                onChange={(e) => setAmount(!e.target.value ? 0 : parseFloat(e.target.value))}
                 variant={'outline'}
               >
               </Input>

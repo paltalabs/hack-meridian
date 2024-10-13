@@ -16,7 +16,7 @@ mod token {
 }
 use token::TokenClient;
 pub fn create_token_contract<'a>(e: &Env, admin: &Address) -> TokenClient<'a> {
-    TokenClient::new(&e, &e.register_stellar_asset_contract(admin.clone()))
+    TokenClient::new(&e, &e.register_stellar_asset_contract_v2(admin.clone()).address())
 }
 
 // PayrollVault Contract
@@ -40,7 +40,7 @@ fn create_payroll_vault_contract<'a>(
 
 pub struct PaymentVaultTest<'a> {
     env: Env,
-    admin: Address,
+    // admin: Address,
     employer: Address,
     token: TokenClient<'a>,
     contract: PayrollVaultClient<'a>,
@@ -89,7 +89,7 @@ impl<'a> PaymentVaultTest<'a> {
 
         PaymentVaultTest {
             env: env,
-            admin: admin,
+            // admin: admin,
             employer: employer,
             token: token,
             contract: contract,
