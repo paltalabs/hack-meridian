@@ -3,16 +3,20 @@ import React from 'react'
 import { Accordion, AccordionButton, AccordionItem, AccordionPanel, Avatar, Button, Card, CardBody, CardFooter, Grid, GridItem, Heading, IconButton, Stack, Text } from '@chakra-ui/react'
 import { BsThreeDotsVertical, BsTrash } from "react-icons/bs";
 import { shortenAddress } from '@/utils/shortenAdress'
+import { useSelector } from 'react-redux';
+import { selectEmployerEmployees } from '@/store/features/employerStore';
 
 export const TradContractsAccordion = () => {
   const { address } = useSorobanReact()
   const contracts = ['GC2VCACI4VCD3RQF3JNQNYYCGXAMZRQ3LKF3Q5425W7RIY6PR2UUNNEB', 'GC2VCACI4VCD3RQF3JNQNYYCGXAMZRQ3LKF3Q5425W7RIY6PR2UUNNEB', 'GC2VCACI4VCD3RQF3JNQNYYCGXAMZRQ3LKF3Q5425W7RIY6PR2UUNNEB']
+  const employees = useSelector(selectEmployerEmployees);
+
 
   if (!address) return null;
   return (
     <>
       <Accordion allowMultiple allowToggle>
-        {contracts.map((contract, index) => (
+        {Object.keys(employees).map((contract, index) => (
           <Card
             overflow='hidden'
             w={'95vw'}
@@ -37,8 +41,8 @@ export const TradContractsAccordion = () => {
                   </GridItem>
                   <GridItem colSpan={10}>
                     <CardBody textAlign={'left'}>
-                      <Heading size='md'>Pedro Urdemales</Heading>
-                      <Text fontSize='sm' as={'sub'}>$ 600 - Monthly</Text>
+                      <Heading size='md'>{employees[contract].employee.name}</Heading>
+                      <Text fontSize='sm' as={'sub'}>$ {employees[contract].salary / 10000000} - {employees[contract].payment_period}</Text>
                     </CardBody>
                   </GridItem>
                   <GridItem colSpan={1} justifySelf={'end'}>
@@ -49,7 +53,7 @@ export const TradContractsAccordion = () => {
 
               <AccordionPanel pb={4}>
                 <Text as={'p'}>{shortenAddress(contract, 4)}</Text>
-                <Text as={'sub'}>Notice 1 Month before</Text>
+                <Text as={'sub'}>Notice {employees[contract].notice_period} weeks before</Text>
                 <CardFooter>
                   <Stack direction='row' spacing={4} align={'center'}>
                     <IconButton size={'md'} variant={'ghost'} aria-label='delete-contract' icon={<BsTrash />} py={4} />

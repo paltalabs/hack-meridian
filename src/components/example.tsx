@@ -49,7 +49,7 @@ export const Example = () => {
         const employee = new Address("GCWGZHN3ZVH5BSW6246DOIKPDQL6RXKKENB6ZJ2MIVPISGKRBIOHM2GO")
         const name = nativeToScVal("Joe", { type: "string" })
         // const payment_period
-        const paymentPeriod = nativeToScVal(PaymentPeriod.WEEKLY)
+        const paymentPeriod = nativeToScVal(PaymentPeriod.WEEKLY, { type: "u32" })
         // const paymentPeriod = nativeToScVal(PaymentPeriod.MONTHLY, { type: "u32" })
         const salary = nativeToScVal(1_0000000, { type: "i128" })
         const noticePeriod = nativeToScVal(2, { type: "u64" })
@@ -167,7 +167,7 @@ export const Example = () => {
                                 <p><strong>Salary:</strong> {employee.salary}</p>
                                 <p><strong>Payment Period:</strong> {employee.payment_period}</p>
                                 <p><strong>Notice Period:</strong> {employee.notice_period}</p>
-                                <p><strong>Employed At:</strong> {employee.employed_at}</p>
+                                <p><strong>Employed At:</strong> {employee.employment_start_date}</p>
                                 <p><strong>Is Active:</strong> {employee.is_active ? 'Yes' : 'No'}</p>
                                 {employee.unemployed_at && (
                                     <p><strong>Unemployed At:</strong> {employee.unemployed_at}</p>
