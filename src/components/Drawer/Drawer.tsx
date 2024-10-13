@@ -25,7 +25,7 @@ export const ProfileDrawer = ({ isOpen, onClose }: { isOpen: boolean, onClose: (
 
 
   if (!address) return null;
-  return (
+  return ( 
     <>
       <BusinessAccountModal isOpen={isAccountModalOpen} onClose={() => { setIsAccountModalOpen(false) }} isDeposit={isDeposit} />
       <Drawer placement={'left'} onClose={onClose} isOpen={isOpen}>
@@ -69,6 +69,45 @@ export const ProfileDrawer = ({ isOpen, onClose }: { isOpen: boolean, onClose: (
                 }}
               >
                 Withdraw from Business account
+              </Button>
+              <Button
+                leftIcon={<MinusIcon />}
+                variant={'outline'}
+                minW={'100%'}
+                justifyContent={'left'}
+                pl={4} py={8}
+                onClick={() => {
+                  setIsAccountModalOpen(true)
+                  setIsDeposit(false)
+                }}
+              >
+                 💰🧑‍💼 Deposit as a Borrower
+              </Button>
+              <Button
+                leftIcon={<MinusIcon />}
+                variant={'outline'}
+                minW={'100%'}
+                justifyContent={'left'}
+                pl={4} py={8}
+                onClick={() => {
+                  setIsAccountModalOpen(true)
+                  setIsDeposit(false)
+                }}
+              >
+               💸 Withdraw as a Borrower
+              </Button>
+              <Button
+                leftIcon={<MinusIcon />}
+                variant={'outline'}
+                minW={'100%'}
+                justifyContent={'left'}
+                pl={4} py={8}
+                onClick={() => {
+                  setIsAccountModalOpen(true)
+                  setIsDeposit(false)
+                }}
+              >
+                🤑 Ask a Credit
               </Button>
             </Stack>
           </DrawerBody>
