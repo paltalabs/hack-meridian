@@ -41,7 +41,7 @@ pub struct Employee {
 #[derive(Clone, Debug, Eq, PartialEq, Copy)]
 #[contracttype]
 pub enum PaymentPeriod {
-    Weekly,
-    Monthly,
-    Annually,
+    Weekly = 0,
+    Monthly = 1,
+    Annually = 2,
 }

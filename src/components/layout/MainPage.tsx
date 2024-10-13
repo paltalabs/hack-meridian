@@ -1,39 +1,84 @@
-import { shortenAddress } from '@/utils/shortenAdress'
-import { Avatar, Button, Drawer, DrawerBody, DrawerContent, DrawerHeader, DrawerOverlay, Grid, GridItem } from '@chakra-ui/react'
 import { useSorobanReact } from '@soroban-react/core'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import { ProfileDrawer } from '../Drawer/Drawer'
+import { SearchBar } from './SearchBar'
+import { useDispatch } from 'react-redux'
+import { PayrollVaultMethod, usePayrollVaultCallback } from '@/hooks/usePayroll'
+import { fetchPayrollAddress } from '@/utils/payrollVault'
+import { Address, scValToNative, xdr } from '@stellar/stellar-sdk'
+import { TradContractsAccordion } from '../Accordion/TradContractsAccorrdion'
+import { Button, Flex, Stack, Text } from '@chakra-ui/react'
+import { PaymentPeriod, addEmployee, setBalance, setName } from '@/store/features/employerStore'
+import { CreateContractModal } from '../Modals/CreateContractModal'
+import { PayButton } from '../buttons/PayButton'
 
 export const MainPage = () => {
-  const { address } = useSorobanReact()
-  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(true)
+  const sorobanContext = useSorobanReact()
+  const { address, activeChain } = sorobanContext
+  const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
+  const dispatch = useDispatch(); // Redux dispatch
+  const invokePayrollVault = usePayrollVaultCallback(); // Payroll vault hook
+  const [companyBalance, setCompanyBalance] = useState(0)
+
+  useEffect(() => {
+
+    if (!activeChain || !address) {
+      console.log("Not connected")
+      return;
+    }
+    const vaultAddress = fetchPayrollAddress(activeChain.id)
+    const employer = new Address(address)
+
+    invokePayrollVault(
+      vaultAddress,
+      PayrollVaultMethod.EMPLOYER_BALANCE,
+      [employer.toScVal()],
+      false
+    ).then((result) => {
+      //@ts-ignore
+      dispatch(setBalance(Number(scValToNative(result))))
+      //@ts-ignore
+      setCompanyBalance(Number(scValToNative(result)))
+      invokePayrollVault(
+        vaultAddress,
+        PayrollVaultMethod.GET_EMPLOYER,
+        [employer.toScVal()],
+        false
+      ).then((result) => {
+        console.log("result", scValToNative(result as xdr.ScVal))
+        const nativeResult = scValToNative(result as xdr.ScVal)
+        dispatch(setName(nativeResult.name))
+
+        const employees = nativeResult.employees
+        
+        Object.entries(employees).forEach(([address, workContract]) => {
+          //@ts-ignore
+          dispatch(addEmployee({ address, workContract }));
+        });
+        //@ts-ignore
+        // dispatch(setBalance(Number(scValToNative(result))))
+      })
+
+    })
+
+
+  }, [address, activeChain])
+  const [isCreateContractModalOpen, setIsCreateContractModalOpen] = useState<boolean>(false)
 
   if (!address) return null;
   return (
     <>
-      <Drawer placement={'left'} onClose={() => setIsDrawerOpen(false)} isOpen={isDrawerOpen}>
-        <DrawerOverlay />
-        <DrawerContent>
-          <DrawerHeader borderBottomWidth='1px'>
-            <Grid templateColumns={'repeat(12, 1fr)'}>
-              <GridItem colSpan={8}>
-                <h2>Business Name</h2>
-                <small>{shortenAddress(address, 4)}</small>
-              </GridItem>
-              <GridItem colSpan={4} alignContent={'center'} textAlign={'center'}>
-                <Avatar name='Jhon Doe' src='https://static.vecteezy.com/system/resources/previews/004/511/281/original/default-avatar-photo-placeholder-profile-picture-vector.jpg' />
-              </GridItem>
-            </Grid>
-          </DrawerHeader>
-          <DrawerBody p={0} >
-            <Button minW={'100%'} textAlign={'left'} pl={0}>
-              + Deposit to Business account
-            </Button>
-            <Button minW={'100%'} textAlign={'left'} pl={0}>
-              - Withdraw from Business account
-            </Button>
-          </DrawerBody>
-        </DrawerContent>
-      </Drawer>
+      <ProfileDrawer isOpen={isDrawerOpen} onClose={() => { setIsDrawerOpen(false) }} />
+      <SearchBar handleOpenDrawer={setIsDrawerOpen} handleCreateContract={setIsCreateContractModalOpen} />
+      <CreateContractModal isOpen={isCreateContractModalOpen} onClose={setIsCreateContractModalOpen} />
+      <Stack>
+        <Text>Business account balance:</Text>
+        <Text as={'b'} fontSize={'3xl'}>$ {companyBalance / 10000000}</Text>
+      </Stack>
+      <TradContractsAccordion />
+      <Flex justifyContent="flex-end" width="100%" mt={4}>
+        <PayButton />
+      </Flex>
     </>
   )
 }

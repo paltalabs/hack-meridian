@@ -8,10 +8,10 @@ export interface WorkContract {
     payment_period: PaymentPeriod;
     salary: number;
     notice_period: number;
-    employed_at: number;
+    employment_start_date: number;
     is_active: boolean;
     unemployed_at?: number | null;
-    notice_period_payments_made: number;
+    notice_period_payments_made?: number;
 }
 
 export interface Employee {
@@ -28,6 +28,7 @@ export enum PaymentPeriod {
 export interface EmployerState {
     address: string;
     name: string;
+    balance: number;
     employees: Record<string, WorkContract>; // Using a record to store employees by address
     total_liabilities: number;
 }
@@ -36,6 +37,7 @@ export interface EmployerState {
 const initialState: EmployerState = {
     address: '',
     name: '',
+    balance: 0,
     employees: {},
     total_liabilities: 0,
 }
@@ -50,6 +52,9 @@ export const employerSlice = createSlice({
         },
         setName: (state, action: PayloadAction<string>) => {
             state.name = action.payload
+        },
+        setBalance: (state, action: PayloadAction<number>) => {
+            state.balance = action.payload
         },
         addEmployee: (state, action: PayloadAction<{ address: string, workContract: WorkContract }>) => {
             state.employees[action.payload.address] = action.payload.workContract;
@@ -80,6 +85,7 @@ export const {
     setAddress,
     setName,
     addEmployee,
+    setBalance,
     updateEmployeeContract,
     setTotalLiabilities,
     resetEmployer,
@@ -88,6 +94,7 @@ export const {
 // Selectors
 export const selectEmployerAddress = (state: RootState) => state.employer.address
 export const selectEmployerName = (state: RootState) => state.employer.name
+export const selectBalance = (state: RootState) => state.employer.balance
 export const selectEmployerEmployees = (state: RootState) => state.employer.employees
 export const selectTotalLiabilities = (state: RootState) => state.employer.total_liabilities
 

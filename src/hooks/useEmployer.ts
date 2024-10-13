@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
+import { act, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { setAddress, setName, addEmployee, setTotalLiabilities } from '@/store/features/employerStore';
-import { PayrollVaultMethod, usePayrollVault } from '@/hooks/usePayroll'; // Assuming the usePayrollVault is imported correctly
+import { setAddress, setName, addEmployee, setTotalLiabilities, setBalance } from '@/store/features/employerStore';
+import { PayrollVaultMethod, usePayrollVaultCallback } from '@/hooks/usePayroll'; // Assuming the usePayrollVaultCallback is imported correctly
 import { useSorobanReact } from "@soroban-react/core";
 import StellarSdk from "@stellar/stellar-sdk";
 import {
@@ -10,14 +10,16 @@ import {
     scValToNative,
     xdr,
 } from "@stellar/stellar-sdk";
+import { fetchPayrollAddress } from '@/utils/payrollVault';
 
 export const useEmployer = (network: string) => {
-    const { address } = useSorobanReact(); // Get the user's wallet address from SorobanReact
-    const { invokePayrollVault } = usePayrollVault(network); // Payroll vault hook
+
+    const sorobanContext = useSorobanReact()
+    const { address, activeChain } = sorobanContext
+    const invokePayrollVault = usePayrollVaultCallback(); // Payroll vault hook
     const dispatch = useDispatch(); // Redux dispatch
     const [error, setError] = useState<string | null>(null);
 
-    const vaultAddress = "CCUWKBOGIYZK7HVIMYJAA65WILSV6GEFFQHJJFACHIKOANR2556IXXDV"
     useEffect(() => {
         const fetchEmployerDetails = async () => {
             try {
@@ -25,7 +27,11 @@ export const useEmployer = (network: string) => {
                 if (!address) {
                     throw new Error('No employer address available');
                 }
+                if (!activeChain) {
+                    throw new Error('No active Chain when fetching employer details')
+                }
 
+                const vaultAddress = fetchPayrollAddress(activeChain?.id)
                 // Call the contract to get the employer details
                 const employerData: any = await invokePayrollVault(vaultAddress, PayrollVaultMethod.GET_EMPLOYER, [
                     (new Address(address)).toScVal(), // Convert the address to ScVal type
@@ -56,3 +62,30 @@ export const useEmployer = (network: string) => {
 
     return { error };
 };
+
+export const useEmployerBalance = () => {
+
+    const sorobanContext = useSorobanReact()
+    const { address, activeChain } = sorobanContext
+    const dispatch = useDispatch(); // Redux dispatch
+
+    if (!activeChain || !address) {
+        console.log("Not connected")
+        return;
+    }
+    const invokePayrollVault = usePayrollVaultCallback(); // Payroll vault hook
+    const vaultAddress = fetchPayrollAddress(activeChain.id)
+    const employer = new Address(address)
+
+    invokePayrollVault(
+        vaultAddress,
+        PayrollVaultMethod.EMPLOYER_BALANCE,
+        [employer.toScVal()],
+        false
+    ).then((result) => {
+        //@ts-ignore
+        dispatch(setBalance(scValToNative(result)))
+    })
+
+
+}
