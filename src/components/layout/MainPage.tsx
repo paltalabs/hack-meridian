@@ -5,7 +5,7 @@ import { SearchBar } from './SearchBar'
 import { useDispatch } from 'react-redux'
 import { PayrollVaultMethod, usePayrollVaultCallback } from '@/hooks/usePayroll'
 import { fetchPayrollAddress } from '@/utils/payrollVault'
-import { Address, scValToNative } from '@stellar/stellar-sdk'
+import { Address, scValToNative, xdr } from '@stellar/stellar-sdk'
 import { TradContractsAccordion } from '../Accordion/TradContractsAccorrdion'
 import { Stack, Text } from '@chakra-ui/react'
 import { setBalance, setName } from '@/store/features/employerStore'
@@ -42,8 +42,8 @@ export const MainPage = () => {
         [employer.toScVal()],
         false
       ).then((result) => {
-        console.log("result", scValToNative(result))
-        const nativeResult = scValToNative(result)
+        console.log("result", scValToNative(result as xdr.ScVal))
+        const nativeResult = scValToNative(result as xdr.ScVal)
         dispatch(setName(nativeResult.name))
         //@ts-ignore
         // dispatch(setBalance(Number(scValToNative(result))))

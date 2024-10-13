@@ -41,13 +41,13 @@ export function usePayrollVaultCallback() {
                 sorobanContext,
                 signAndSend: signAndSend,
                 reconnectAfterTx: false,
-            })) as TxResponse;
+            }));
 
             if (!signAndSend) return result;
 
             if (
                 isObject(result) &&
-                result?.status !== StellarSdk.SorobanRpc.Api.GetTransactionStatus.SUCCESS
+                (result as TxResponse)?.status !== StellarSdk.SorobanRpc.Api.GetTransactionStatus.SUCCESS
             ) throw result;
             return result;
         },
