@@ -24,7 +24,7 @@ export const TradContractsAccordion = () => {
             rounded={16}
             variant='elevated'
             boxShadow='xl'
-            _hover={{ boxShadow: '2xl', transform: 'scale(4.02)', transition: 'all 0.2s ease-in-out' }}
+            _hover={{ boxShadow: '2xl', transform: 'scale(1.02)', transition: 'all 0.2s ease-in-out' }}
           >
             <AccordionItem sx={{ border: 'none' }}>
               <AccordionButton >
