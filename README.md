@@ -6,6 +6,10 @@ Payroll Genius is a decentralized app (dApp) that streamlines employment contrac
 
 -> [DEMO](https://payrollgenius.paltalabs.io/) To play around, you need to mint test tokens from [Soroswap.Finance](https://app.soroswap.finance/balance)
 
+# 👀 [TECHNICAL WALKAROUND VIDEO!!!!!](https://youtu.be/H84pWAEkSTY)
+[![**TECHNICAL WALKAROUND VIDEO!!!!!**](https://github.com/user-attachments/assets/cf217808-01f1-455a-af12-07c3ed3dbc07)](https://youtu.be/H84pWAEkSTY)
+
+
 ## Pre requisites
 - [ ] Docker (tested with Docker version 27.1.2)
 - [ ] Browser with Freighter Wallet
@@ -102,11 +106,97 @@ Payroll payments are processed through:
 
 The lending process is entirely powered by Soroban smart contracts, allowing employees to access loans backed by their future salary payments. Lenders can globally access this market, earning yield on their investments.
 
-### Roadmap
-- [ ] Traditional PDF Contract to Smart Contract between 2 peers using AI
-- [ ] Implement Loans based on future payments
-- [ ] Update employee conditions
-- [ ] Fee System / Subscription tiers for employers
+# Roadmap
+## Phase 1: Foundation Development
+
+### Smart Contract Infrastructure
+
+- Develop and secure the core Payroll Vault smart contracts on Soroban.
+- Implement decentralized storage of employment contracts using IPFS.
+- Integrate MD5 hashing for contract integrity verification.
+
+### User Interface
+
+- UX research for frontend.
+
+### Payroll Management
+
+- Enable employers to set salary parameters, payment frequency, and guaranteed pay periods.
+
+- Automate bulk payroll processing through Soroban smart contracts.
+
+## Phase 2: DeFi Integration
+
+### Yield Generation
+
+- Integrate DeFi protocols like DeFindex for idle payroll funds.
+
+- Automate investment
+
+### Financial Dashboard
+
+- Develop BI and analytics tools for employers to monitor investments and payroll expenses.
+
+### Compliance
+
+- Implement safeguards to ensure businesses have sufficient funds for guaranteed pay periods.
+
+- Develop compliance modules adhering to financial regulations.
+
+## Phase 3: Employee Empowerment and Lending
+
+### Employee Loans
+
+- Implement a lending system allowing employees to secure loans against future salary payments.
+
+- Create a global marketplace for lenders to invest in employee-backed loans.
+
+### Risk Management
+
+- Develop risk assessment tools leveraging employment contract data for lenders.
+
+### Employee Tools
+
+- Provide employees with dashboards to manage loan applications and repayments.
+
+## Phase 4: Ecosystem Integration
+
+### Onboarding Strategy
+
+- Target and onboard startups and companies using USDC and strong stablecoins.
+
+- Expand to countries with high stablecoin adoption.
+
+### Third-Party Integrations
+
+- Connect with accounting tools like Kwickbit for seamless financial reporting.
+
+- Integrate with HR tools to synchronize employee data.
+
+- SEP Implementation: Prepare for future on/off-ramp integration once standards are finalized.
+
+## Phase 5: AI and Automation Enhancements
+
+### AI-Powered Contract Conversion
+
+- Utilize AI to convert traditional PDF contracts into smart contracts between peers.
+
+## Phase 6: Monetization
+
+### Subscription Models
+
+- Introduce a fee system and subscription tiers offering premium features.
+
+### Multi-Currency Support
+
+- Expand support to multiple stablecoins and fiat currencies.
+
+## Phase 7: Global Expansion
+
+- Cross-Border Payroll
+
+- Enable cross-border payroll capabilities to simplify international payments.
+- Compliance with cross-border regulation.
 
 # Screenshots
 
