@@ -22,8 +22,11 @@ export const TradContractsAccordion = () => {
             overflow='hidden'
             w={'95vw'}
             mt={6}
+            bg={'#F7F2FA'}
             rounded={16}
             variant='elevated'
+            boxShadow='xl'
+            _hover={{ boxShadow: '2xl', transform: 'scale(4.02)', transition: 'all 0.2s ease-in-out' }}
           >
             <AccordionItem sx={{ border: 'none' }}>
               <AccordionButton >
@@ -43,7 +46,7 @@ export const TradContractsAccordion = () => {
                   <GridItem colSpan={10}>
                     <CardBody textAlign={'left'}>
                       <Heading size='md'>{employees[contract].employee.name}</Heading>
-                      <Text fontSize='sm' as={'sub'}>$ {Number(employees[contract].salary) / 10000000} - Notice Period: {employees[contract].payment_period}</Text>
+                      <Text fontSize='sm' as={'sub'}>$ {Number(employees[contract].salary) / 10000000} - Payment Period: {employees[contract].payment_period === 0 ? "Weekly" : employees[contract].payment_period === 1 ? "Monthly" : "Yearly"}</Text>
                     </CardBody>
                   </GridItem>
                   <GridItem colSpan={1} justifySelf={'end'}>
@@ -54,11 +57,11 @@ export const TradContractsAccordion = () => {
 
               <AccordionPanel pb={4}>
                 <Text as={'p'}>{shortenAddress(contract, 4)}</Text>
-                <Text as={'sub'}>Notice {employees[contract].notice_period} weeks before</Text>
+                <Text as={'sub'}>Notice {employees[contract].notice_periods_required} weeks before</Text>
                 <CardFooter>
                   <Stack direction='row' spacing={4} align={'center'}>
                     <FireButton employee={employees[contract].employee.address} />
-                    <Button colorScheme='green' size='md' >Review contract</Button>
+                    <Button bg='#2C8BBAE5' color={"white"} size='md' >Review contract</Button>
                   </Stack>
                 </CardFooter>
               </AccordionPanel>

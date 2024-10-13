@@ -7,7 +7,7 @@ export interface WorkContract {
     employee: Employee;
     payment_period: PaymentPeriod;
     salary: number;
-    notice_period: number;
+    notice_periods_required: number;
     employment_start_date: number;
     is_active: boolean;
     unemployed_at?: number | null;
