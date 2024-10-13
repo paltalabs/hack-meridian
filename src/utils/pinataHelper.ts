@@ -16,27 +16,10 @@ export async function pinFileToIPFS(fileStream: NodeJS.ReadableStream, fileName:
       name: fileName,
     },
   };
-
-  // Pin the file to IPFS
+  
   const result = await pinata.pinFileToIPFS(fileStream, options);
   console.log('File pinned:', result);
   const ipfsHash = result.IpfsHash;
 
-  const jsonOptions = {
-    pinataMetadata: {
-      name: `${fileName}.json`,
-    },
-  };
-
-  const jsonContent = {
-    name: fileName,
-    img_url: `https://gateway.pinata.cloud/ipfs/${ipfsHash}`,
-  };
-
-  // Pin the JSON content to IPFS
-  const jsonResult = await pinata.pinJSONToIPFS(jsonContent, jsonOptions);
-  const fileUri = `https://gateway.pinata.cloud/ipfs/${jsonResult.IpfsHash}`;
-  console.log('FILE URI:', fileUri);
-
-  return fileUri;
+  return ipfsHash;
 }
