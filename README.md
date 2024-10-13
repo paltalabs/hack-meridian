@@ -4,39 +4,56 @@
 
 Payroll Genius is a decentralized app (dApp) that streamlines employment contract signatures and salary payments, enabling SMEs to earn yield on their funds while providing employees access to global loans through DeFi. Designed to simplify payroll processes, it leverages Stellar blockchain's DeFi solutions for seamless integration.
 
+-> [DEMO](https://payrollgenius.paltalabs.io/) To play around, you need to mint test tokens from [Soroswap.Finance](https://app.soroswap.finance/balance)
+
+## Pre requisites
+- [ ] Docker (tested with Docker version 27.1.2)
+- [ ] Browser with Freighter Wallet
+- [ ] Get Accounts on Stellar Laboratory or Freighter!
+- [ ] Have a pinata account
+- [ ] Mint test tokens on [Soroswap.Finance](https://app.soroswap.finance/balance)
+
 ## Build, Compile, Deploy and Test your self.
-1.- Run Docker Compose and enter to our Docker container.
+1. Setup secrets
+    ```bash
+    cp .env.example .env
+    ```
+    fill the variables:
+   ```
+   JWT=
+    PINATA_API_SECRET=
+    PINATA_API_KEY=
+    ```
+2. Get the required Docker containers up!
 This helps us be sure that we all run the same software!
 
-```bash
-cp .env.example .env
-docker compose up -d
-bash run
-```
+    ```bash
+    bash run.sh
+    ```
 
-2.- Test and Compile the PayrollVault Smart Contract
-```bash
-cd /workshop/contracts
-cp .env.example .env # for private keys
-make build
-make test
-```
-3.- Fill the /contracts/.env file with the deployers private key
+3. Test and Compile the PayrollVault Smart Contract
+    ```bash
+    cd /workspace/contracts
+    cp .env.example .env # for private keys
+    make build
+    make test
+    ```
+3. Fill the /contracts/.env file with the deployers private key
 
-4.- Deploy the PayrollVault Smart Contract 
-```bash
-cd /workshop/contracts
-yarn
-yarn deploy testnet # can also be mainnet if you have some XLM for gas!
-```
+4. Deploy the PayrollVault Smart Contract 
+    ```bash
+    cd /workspace/contracts
+    yarn
+    yarn deploy testnet # can also be mainnet if you have some XLM for gas!
+    ```
 
-5.- Run the ReactJS frontend
-```bash
-cd /workshop/
-yarn
-yarn dev
-```
-This will start the development server. The dapp will be available on localhost. 
+5. Run the ReactJS frontend
+    ```bash
+    cd /workshop/
+    yarn
+    yarn dev
+    ```
+This will start the development server. The dapp will be available on `localhost:3000`. 
 
 
 # Full Description of the Project
@@ -56,9 +73,9 @@ We believe this design is highly compliant, as businesses are solely involved in
 
 # Technical explanation
 
-Our project utilizes a combination of Stellar's Soroban smart contracts, ReactJS, IPFS, @soroban-react NPM library, MD5 hashing, and SEP24 for on/off ramps. Below is a breakdown:
+Our project utilizes a combination of Stellar's Soroban smart contracts, ReactJS, IPFS, @soroban-react NPM library, MD5 hashing, and SEP24/SEP6 for on/off ramps. Below is a breakdown:
 
-1) Employment Contract Signing
+## Employment Contract Signing
 
 We use ReactJS with the @soroban-react to handle message signing with Stellar wallets like Freighter. The employment contract signing process involves:
 
@@ -67,20 +84,29 @@ We use ReactJS with the @soroban-react to handle message signing with Stellar wa
 - IPFS (Pinata): The PDF contract is uploaded to IPFS for decentralized storage, but access to the link remains private between the employer and employee in a link that will be shared by the employer to the employee.
 - Hashing & Verification: The MD5 hash ensures the integrity of the contract. The employer shares a private link with the document to the employee, who can verify the hash and sign the contract using their Stellar wallet. The private link includes the md5 hash + the ipfs URL.
 
-2) DeFi Yields for Business Funds
+## DeFi Yields for Business Funds
 
 We use Soroban smart contracts to manage the business’s payroll funds:
 
-- DeFi Integration: When a business deposits new funds (from sales or other income), Soroban smart contracts allocate the funds to yield-generating DeFi strategies. Upon salary payments, the funds are withdrawn from these DeFi strategies to pay employees.
-- Automatic Transactions: Each time a business adds funds or makes a payroll payment, a sub-contract transaction is executed through Soroban, automating the process.
+- **DeFi Integration:** When a business deposits new funds (from sales or other income), Soroban smart contracts allocate the funds to yield-generating DeFi strategies. Upon salary payments, the funds are withdrawn from these DeFi strategies to pay employees.
+- **Automatic Transactions:** Each time a business adds funds or makes a payroll payment, a sub-contract transaction is executed through Soroban, automating the process.
 
-3) Payroll Payments
+## Payroll Payments
 
 Payroll payments are processed through:
 
-- ReactJS Frontend: We use the @soroban-react NPM library for managing Stellar wallet interactions.
-- On/Off-Ramps (SEP-24): Although not yet implemented, we plan to use Stellar's SEP-24 for fiat on-ramps (POS income to the business vault) and off-ramps (to transfer salaries from employer’s vault to bank accounts).
+- **ReactJS Frontend:** We use the `@soroban-react` NPM library for managing Stellar wallet interactions.
+- **On/Off-Ramps (SEP-24/SEP-6):** Although not yet implemented, we plan to use Stellar's SEPs for fiat on-ramps (POS income to the business vault) and off-ramps (to transfer salaries from employer’s vault to bank accounts). However, this cannot be done right now because the standar that connects Smart Contracts with Anchors is under discussion. 
 
-4) Lending System
+## Lending System
 
 The lending process is entirely powered by Soroban smart contracts, allowing employees to access loans backed by their future salary payments. Lenders can globally access this market, earning yield on their investments.
+
+# Screenshots
+
+![login](./assets/login.png)
+![landing](./assets/landing.png)
+![depositWithdrawal](./assets/depositWithdrawal.png)
+![hiring](./assets/hiring.png)
+![link](./assets/link.png)
+![accepting](./assets/accepting.png)
