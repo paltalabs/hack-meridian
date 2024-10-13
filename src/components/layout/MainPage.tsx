@@ -40,7 +40,7 @@ export const MainPage = () => {
     })
 
   }, [address, activeChain])
-  const [isCreateContractModalOpen, setIsCreateContractModalOpen] = useState<boolean>(true)
+  const [isCreateContractModalOpen, setIsCreateContractModalOpen] = useState<boolean>(false)
 
   if (!address) return null;
   return (

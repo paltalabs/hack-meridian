@@ -6,7 +6,6 @@ import { AddIcon } from '@chakra-ui/icons'
 
 export const CreateContractModal = ({ isOpen, onClose }: { isOpen: boolean, onClose: (value: boolean) => void }) => {
   const { address } = useSorobanReact()
-  const [isCreateContractModalOpen, setIsCreateContractModalOpen] = useState<boolean>(true)
 
   if (!address) return null;
   return (

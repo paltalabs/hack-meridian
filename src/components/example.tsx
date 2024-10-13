@@ -82,11 +82,8 @@ export const Example = () => {
         if (!address) return;
         const caller = new Address(address);
         const employer = new Address(address);
-<<<<<<< HEAD
-        const amount = nativeToScVal(1000_0000000, { type: 'i128' })
-=======
         const amount = nativeToScVal(100000_0000000, { type: 'i128' })
->>>>>>> 8ea5e00d961faf782f80e60d57bd3224a280a518
+
 
         const depositParams = [
             caller.toScVal(),
