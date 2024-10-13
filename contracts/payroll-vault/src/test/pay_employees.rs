@@ -33,13 +33,21 @@ fn test_pay_employees() {
     let salary = 1_000_000;
     let notice_periods_required = 3;
     let name = String::from_str(&test.env, "Alice");
+    let work_contract_document_hash = String::from_str(&test.env, "hash");
+
     test.contract.employ(
         &test.employer,
         &employee_0,
         &name,
         &crate::test::payroll_vault::PaymentPeriod::Monthly, 
         &salary, 
-        &notice_periods_required);
+        &notice_periods_required,
+        &work_contract_document_hash);
+    
+    test.contract.accept_work(
+        &test.employer, 
+        &employee_0,
+        &true);
     
     // time has passed // 30 days has passed
     let new_time = 30 * 24 * 60 * 60 +1;
@@ -133,26 +141,42 @@ fn test_pay_employees_multiple_employees() {
     let salary = 1_000_000;
     let notice_periods_required = 3;
     let name = String::from_str(&test.env, "Alice");
+    let work_contract_document_hash = String::from_str(&test.env, "hash");
+
     test.contract.employ(
         &test.employer,
         &employee_0,
         &name,
         &crate::test::payroll_vault::PaymentPeriod::Monthly, 
         &salary, 
-        &notice_periods_required);
+        &notice_periods_required,
+        &work_contract_document_hash);
+    
+    test.contract.accept_work(
+        &test.employer, 
+        &employee_0,
+        &true);
     
     // Employ someone
     let employee_1 = Address::generate(&test.env);
     let salary = 1_000_000;
     let notice_periods_required = 2;
     let name = String::from_str(&test.env, "Bob");
+    let work_contract_document_hash = String::from_str(&test.env, "hash");
+
     test.contract.employ(
         &test.employer,
         &employee_1,
         &name,
         &crate::test::payroll_vault::PaymentPeriod::Weekly, 
         &salary, 
-        &notice_periods_required);
+        &notice_periods_required,
+        &work_contract_document_hash);
+
+    test.contract.accept_work(
+        &test.employer, 
+        &employee_1,
+        &true);
     
     // time has passed // 30 days has passed
     let new_time = 30 * 24 * 60 * 60 +1;

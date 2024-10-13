@@ -36,6 +36,8 @@ cd /workshop/
 yarn
 yarn dev
 ```
+This will start the development server. The dapp will be available on localhost. 
+
 
 # Full Description of the Project
 

@@ -12,4 +12,5 @@ pub enum ContractError {
     EmployeeNotFound = 104,
     IntegerOverflow = 105,
     EmployeeAlreadyFired = 106,
+    WorkContractNotFound = 107,
 }

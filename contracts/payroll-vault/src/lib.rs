@@ -1,7 +1,7 @@
 #![no_std]
 use models::{Employer, PaymentPeriod, WorkContract};
 use soroban_sdk::{
-    contract, contractimpl, token::TokenClient, Address, Env, String, Vec // Map, String,
+    contract, contractimpl, token::TokenClient, Address, Env, String, // Vec // Map, String,
 };
 
 mod error;
@@ -129,6 +129,7 @@ impl VaultTrait for PayrollVault {
         payment_period: PaymentPeriod,
         salary: i128,
         notice_periods_required: u64, // Number of payment periods before the employee can be fired
+        work_contract_document_hash: String,
     ) -> Result<(), ContractError> {
         let mut employer_struct = get_employer(&e, &employer);
     
@@ -164,11 +165,10 @@ impl VaultTrait for PayrollVault {
             notice_periods_required,
             salary,
 
-            employment_start_date: now,
+            employment_start_date: None,
             employment_end_date: None,
-            last_payment_date: now,
-
-            notice_period_payments_made: 0,
+            last_payment_date: None,
+            work_contract_document_hash,
         };
     
         // Add the new employee to the employer's employees map
@@ -179,6 +179,40 @@ impl VaultTrait for PayrollVault {
         Ok(())
     }
 
+    fn accept_work(
+        e: Env,
+        employer: Address,
+        employee: Address,
+        accept_work: bool,
+    ) -> Result<(), ContractError> {
+        let mut employer_struct = get_employer(&e, &employer);
+        let mut work_contract = employer_struct
+            .employees
+            .get(employee.clone())
+            .ok_or(ContractError::WorkContractNotFound)?;
+    
+        match work_contract.employment_start_date {
+            Some(_) => return Err(ContractError::AlreadyEmployed),
+            None => {
+                if accept_work {
+                    work_contract.employment_start_date = Some(e.ledger().timestamp());
+                    work_contract.last_payment_date = Some(e.ledger().timestamp());
+
+                    employer_struct
+                        .employees
+                        .set(employee.clone(), work_contract.clone());
+                        
+                        
+                    } else {
+                        employer_struct.employees.remove(employee.clone());
+                    }
+                    work_contract.employment_start_date = Some(e.ledger().timestamp());
+                }
+            }
+        
+            set_employer(&e, employer, employer_struct);
+        Ok(())
+    }
     fn pay_employees(
         e: Env,
         employer: Address,
@@ -191,7 +225,12 @@ impl VaultTrait for PayrollVault {
         for employee_address in employer_struct.employees.keys() {
             let mut work_contract = employer_struct.employees.get(employee_address.clone()).unwrap();
 
-             // I should pay if the periods since fired is less than the notice periods required
+            // the work contract has been accepted only if the employment start date is not None
+            if work_contract.employment_start_date.is_none() {
+                continue;
+            }
+             
+            // I should pay if the periods since fired is less than the notice periods required
 
              match work_contract.employment_end_date {
                 Some(employment_end_date) if calculate_periods_since(
@@ -199,14 +238,14 @@ impl VaultTrait for PayrollVault {
                     current_timestamp, 
                     work_contract.payment_period,
                 ) > work_contract.notice_periods_required => {
-                    continue; // this person has been fired
                     employer_struct.employees.remove(employee_address.clone());
+                    continue; // this person has been fired
                 }
                 _ => {}
             };
             
             let periods_since_last_payment = calculate_periods_since(
-                work_contract.last_payment_date,
+                work_contract.last_payment_date.unwrap(), // if we are here, this is not none
                 current_timestamp,
                 work_contract.payment_period,
             );
@@ -239,10 +278,10 @@ impl VaultTrait for PayrollVault {
             // TODO This is bad if the payment is made days after the end of a period
             // TODO FIX THIS
             // last payment date + periods since last payment * payment period
-            work_contract.last_payment_date = work_contract.last_payment_date + calculate_periods_amounts_in_seconds(
+            work_contract.last_payment_date = Some(work_contract.last_payment_date.unwrap() + calculate_periods_amounts_in_seconds(
                 periods_since_last_payment,
                 work_contract.payment_period,
-            );
+            ));
 
             employer_struct.employees.set(employee_address.clone(), work_contract);
         }
