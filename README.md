@@ -1,6 +1,7 @@
-# Welcome to your soroban react dapp boilerplate!
+# Welcome to Payroll Genius 🧠!
 
-This dapp largely inspired by the [ink!athon](https://github.com/scio-labs/inkathon) project will help you kickstart your soroban dapp creator journey.
+
+Payroll Genius is a decentralized application (dapp) inspired by the [Link project](https://github.com/paltalabs/hack-meridian), designed to simplify the payroll process for businesses while leveraging DeFi solutions on the Stellar blockchain.
 
 ## Verify installation
 
