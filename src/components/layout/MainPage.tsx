@@ -8,7 +8,7 @@ import { fetchPayrollAddress } from '@/utils/payrollVault'
 import { Address, scValToNative } from '@stellar/stellar-sdk'
 import { TradContractsAccordion } from '../Accordion/TradContractsAccorrdion'
 import { Stack, Text } from '@chakra-ui/react'
-import { setBalance } from '@/store/features/employerStore'
+import { setBalance, setName } from '@/store/features/employerStore'
 
 export const MainPage = () => {
   const sorobanContext = useSorobanReact()
@@ -32,11 +32,24 @@ export const MainPage = () => {
       [employer.toScVal()],
       false
     ).then((result) => {
-      console.log('🚀 ~ ).then ~ result:', result);
       //@ts-ignore
       dispatch(setBalance(Number(scValToNative(result))))
 
+      invokePayrollVault(
+        vaultAddress,
+        PayrollVaultMethod.GET_EMPLOYER,
+        [employer.toScVal()],
+        false
+      ).then((result) => {
+        console.log("result", scValToNative(result))
+        const nativeResult = scValToNative(result)
+        dispatch(setName(nativeResult.name))
+        //@ts-ignore
+        // dispatch(setBalance(Number(scValToNative(result))))
+      })
+
     })
+
 
   }, [address, activeChain])
 
