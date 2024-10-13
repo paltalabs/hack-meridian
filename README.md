@@ -6,7 +6,7 @@ Payroll Genius is a decentralized app (dApp) that streamlines employment contrac
 
 -> [DEMO](https://payrollgenius.paltalabs.io/) To play around, you need to mint test tokens from [Soroswap.Finance](https://app.soroswap.finance/balance)
 
-[![Watch the video]([https://i.sstatic.net/Vp2cE.png](https://github.com/user-attachments/assets/cf217808-01f1-455a-af12-07c3ed3dbc07))]([https://youtu.be/vt5fpE0bzSY](https://youtu.be/H84pWAEkSTY))
+[![**TECHINCAL WALKAROUND VIDEO!!!!!**, **TECHINCAL WALKAROUND VIDEO!!!!!**, **TECHINCAL WALKAROUND VIDEO!!!!!**, **TECHINCAL WALKAROUND VIDEO!!!!!**, **TECHINCAL WALKAROUND VIDEO!!!!!**, **TECHINCAL WALKAROUND VIDEO!!!!!**, **TECHINCAL WALKAROUND VIDEO!!!!!**, **TECHINCAL WALKAROUND VIDEO!!!!!**, **TECHINCAL WALKAROUND VIDEO!!!!!**, **TECHINCAL WALKAROUND VIDEO!!!!!**, **TECHINCAL WALKAROUND VIDEO!!!!!**, **TECHINCAL WALKAROUND VIDEO!!!!!**, ]([https://i.sstatic.net/Vp2cE.png](https://github.com/user-attachments/assets/cf217808-01f1-455a-af12-07c3ed3dbc07))]([https://youtu.be/vt5fpE0bzSY](https://youtu.be/H84pWAEkSTY))
 
 ## Pre requisites
 - [ ] Docker (tested with Docker version 27.1.2)
