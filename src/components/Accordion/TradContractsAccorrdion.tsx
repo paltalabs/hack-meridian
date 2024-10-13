@@ -4,7 +4,7 @@ import { Accordion, AccordionButton, AccordionItem, AccordionPanel, Avatar, Butt
 import { BsThreeDotsVertical, BsTrash } from "react-icons/bs";
 import { shortenAddress } from '@/utils/shortenAdress'
 import { useSelector } from 'react-redux';
-import { selectEmployerEmployees } from '@/store/features/employerStore';
+import { PaymentPeriod, selectEmployerEmployees } from '@/store/features/employerStore';
 import { FireButton } from '../buttons/FireButton';
 
 export const TradContractsAccordion = () => {
@@ -44,7 +44,7 @@ export const TradContractsAccordion = () => {
                   <GridItem colSpan={10}>
                     <CardBody textAlign={'left'}>
                       <Heading size='md'>{employees[contract].employee.name}</Heading>
-                      <Text fontSize='sm' as={'sub'}>$ {Number(employees[contract].salary) / 10000000} - Payment Period: {employees[contract].payment_period === 0 ? "Weekly" : employees[contract].payment_period === 1 ? "Monthly" : "Yearly"}</Text>
+                      <Text fontSize='sm' as={'sub'}>$ {Number(employees[contract].salary) / 10000000} - Payment Period: {employees[contract].payment_period === PaymentPeriod.Weekly ? "Weekly" : employees[contract].payment_period === PaymentPeriod.Monthly ? "Monthly" : "Yearly"}</Text>
                     </CardBody>
                   </GridItem>
                   <GridItem colSpan={1} justifySelf={'end'}>
