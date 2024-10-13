@@ -17,6 +17,7 @@ export const MainPage = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
   const dispatch = useDispatch(); // Redux dispatch
   const invokePayrollVault = usePayrollVaultCallback(); // Payroll vault hook
+  const [companyBalance, setCompanyBalance] = useState(0)
 
   useEffect(() => {
 
@@ -35,7 +36,8 @@ export const MainPage = () => {
     ).then((result) => {
       //@ts-ignore
       dispatch(setBalance(Number(scValToNative(result))))
-
+      //@ts-ignore
+      setCompanyBalance(Number(scValToNative(result)))
       invokePayrollVault(
         vaultAddress,
         PayrollVaultMethod.GET_EMPLOYER,
@@ -106,7 +108,7 @@ export const MainPage = () => {
       <CreateContractModal isOpen={isCreateContractModalOpen} onClose={setIsCreateContractModalOpen} />
       <Stack>
         <Text>Business account balance:</Text>
-        <Text as={'b'} fontSize={'3xl'}>$ 1000</Text>
+        <Text as={'b'} fontSize={'3xl'}>$ {companyBalance / 10000000}</Text>
       </Stack>
       <TradContractsAccordion />
     </>

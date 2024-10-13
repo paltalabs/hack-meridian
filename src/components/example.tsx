@@ -49,7 +49,7 @@ export const Example = () => {
         const employee = new Address("GCWGZHN3ZVH5BSW6246DOIKPDQL6RXKKENB6ZJ2MIVPISGKRBIOHM2GO")
         const name = nativeToScVal("Joe", { type: "string" })
         // const payment_period
-        const paymentPeriod = nativeToScVal(PaymentPeriod.WEEKLY)
+        const paymentPeriod = nativeToScVal(PaymentPeriod.WEEKLY, { type: "u32" })
         // const paymentPeriod = nativeToScVal(PaymentPeriod.MONTHLY, { type: "u32" })
         const salary = nativeToScVal(1_0000000, { type: "i128" })
         const noticePeriod = nativeToScVal(2, { type: "u64" })
