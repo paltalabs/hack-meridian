@@ -1,15 +1,31 @@
 import { shortenAddress } from '@/utils/shortenAdress'
-import { Avatar, Button, Drawer, DrawerBody, DrawerContent, DrawerFooter, DrawerHeader, DrawerOverlay, Grid, GridItem } from '@chakra-ui/react'
+import {
+  Avatar,
+  Button,
+  Drawer,
+  DrawerBody,
+  DrawerContent,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerOverlay,
+  Grid,
+  GridItem,
+  Stack,
+  StackDivider
+} from '@chakra-ui/react'
 import { AddIcon, MinusIcon } from '@chakra-ui/icons'
 import { useSorobanReact } from '@soroban-react/core'
-import React from 'react'
+import React, { useState } from 'react'
+import BusinessAccountModal from '../Modals/BusinessAccountModal'
 
 export const ProfileDrawer = ({ isOpen, onClose }: { isOpen: boolean, onClose: () => void; }) => {
   const { address, disconnect } = useSorobanReact()
+  const [isAccountModalOpen, setIsAccountModalOpen] = useState<boolean>(false)
 
   if (!address) return null;
   return (
     <>
+      <BusinessAccountModal isOpen={isAccountModalOpen} onClose={() => { setIsAccountModalOpen(false) }} />
       <Drawer placement={'left'} onClose={onClose} isOpen={isOpen}>
         <DrawerOverlay backdropFilter={'blur(10px)'} />
         <DrawerContent>
@@ -25,12 +41,28 @@ export const ProfileDrawer = ({ isOpen, onClose }: { isOpen: boolean, onClose: (
             </Grid>
           </DrawerHeader>
           <DrawerBody p={0} >
-            <Button leftIcon={<AddIcon />} minW={'100%'} justifyContent={'left'} pl={4} py={8}>
+            <Stack spacing={0} >
+              <Button
+                leftIcon={<AddIcon />}
+                variant={'outline'}
+                minW={'100%'}
+                justifyContent={'left'}
+                pl={4} py={8}
+                onClick={() => setIsAccountModalOpen(true)}
+              >
               Deposit to Business account
             </Button>
-            <Button leftIcon={<MinusIcon />} minW={'100%'} justifyContent={'left'} pl={4} py={8}>
+              <Button
+                leftIcon={<MinusIcon />}
+                variant={'outline'}
+                minW={'100%'}
+                justifyContent={'left'}
+                pl={4} py={8}
+                onClick={() => setIsAccountModalOpen(true)}
+              >
               Withdraw from Business account
             </Button>
+            </Stack>
           </DrawerBody>
           <DrawerFooter justifyContent={'center'}>
             <Button sx={{ mx: 4, px: 6 }} colorScheme='green' onClick={disconnect} rounded={18} mb={{ base: 4, md: 0 }}>
