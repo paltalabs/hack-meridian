@@ -16,11 +16,11 @@ use interface::VaultTrait;
 pub use error::ContractError;
 
 use storage::{
-    DAY_IN_LEDGERS,
+    // DAY_IN_LEDGERS,
 INSTANCE_BUMP_AMOUNT,
 INSTANCE_LIFETIME_THRESHOLD,
-BALANCE_BUMP_AMOUNT,
-BALANCE_LIFETIME_THRESHOLD,
+// BALANCE_BUMP_AMOUNT,
+// BALANCE_LIFETIME_THRESHOLD,
     get_asset, 
     get_employer, 
     has_asset, 
@@ -154,7 +154,6 @@ impl VaultTrait for PayrollVault {
         employer_struct.total_liabilities = employer_struct.total_liabilities.checked_add(new_employee_liability)
             .ok_or(ContractError::IntegerOverflow)?;
     
-        let now = e.ledger().timestamp();
         // Create the new work contract
         let work_contract = WorkContract {
             employee: models::Employee {
